@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "170604309054",
+    "firebase_url": "https://dkode-893f9.firebaseio.com",
+    "project_id": "dkode-893f9",
+    "storage_bucket": "dkode-893f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:170604309054:android:aaa7736438e6a2da",
+        "android_client_info": {
+          "package_name": "com.kodbale.dkode"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "170604309054-5js957iurpjljfjg9aj9i5cr9buge2bl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kodbale.dkode",
+            "certificate_hash": "42fd4ef243c359579c2c463b2cccdef8e98509f7"
+          }
+        },
+        {
+          "client_id": "170604309054-o6hdvoucpoui53u4e271s36m0n62jn16.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDf2eN0u-QMlVZ7gs5FCPlPphorRmmxg_o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "170604309054-o6hdvoucpoui53u4e271s36m0n62jn16.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
