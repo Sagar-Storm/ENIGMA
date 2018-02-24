@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/0447c2cf094b37db18dea7d85b676ea30c467e68/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="6116e0e7069de7fc259aac8e08b84f32c2038231">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_dc147ab8083f6f2a4e3e6cbc90402ee8a2553477.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/6e82d3c8c92331d3cb8fb99572f9d581f77dabf3/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="433f4d6aa5f21f19552afe0e6c5eff0fedba73ad">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_7f8ba872aafeaf390a942f793cf3935269f20152.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/a75976b9ffa38ac1a7214c3aaf8eae1ef353a786/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="eb0d830e3eabb9deb9ec44869cf7ac7ea1ad794c">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_9daee85101572e2f7d86419fb4b777683c9bd8e8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/30daabf4483c47d7396df75b8328be3c6169edea/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="9cca2818594cc5348806d6662133491e7ea0fa8d">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_e6e2d9bf1e7d2cd54911d8791889452662f068b3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/f175800b5d4ff3b21f0c2f2b1d1fb8cfa07843ea/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="25438f55fc6d906a0e72f30b21487541430ede43">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_a0809143e59a8f44de6105b0cc01a13c4faad80c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/703677cfee1c768b68ca684e2fdda05ceb20a6a8/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="756f6297eef79784f5e356dcd4f39865028b2bd0">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_f2df4134a6983e06249224d3426a025f1a30b2e5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/06a3376734894d2003c9463c0573c5cfa67bd944/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="6addaba208e21c6da776d0ca75b6b23a6ccd5499">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_0bd60157f2e875ea31d6cd091b99dc0d1c1e021e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.android/build-cache/23b10447b4a243cf71aed8f8b1a1f27aa66a6968/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="486371f97baad8e607f332f20fee1d3dd00a731a">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_e666c42ad05c971caaef617603e980319a230f31.jar" />
+    </item>
+
+</items>
