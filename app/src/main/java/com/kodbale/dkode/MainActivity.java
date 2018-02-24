@@ -21,5 +21,6 @@ public class MainActivity extends AppCompatActivity {
         if ( user == null){
             startActivity(new Intent(this, LoginActivity.class));
         }
+        QuestionManager.get(getApplicationContext()).insertAllQuestions();
     }
 }

@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import java.util.Date;
 
@@ -54,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_QUESTION_TEXT, question.getQuestionText());
         cv.put(COLUMN_ANSWER_TEXT, question.getAnswerText());
+        Log.i("inserted", "inserted mate");
         return getReadableDatabase().insert(TABLE_QUESTIONS, null, cv);
     }
 
