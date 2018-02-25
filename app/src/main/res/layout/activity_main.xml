@@ -7,15 +7,13 @@
     android:padding="16dp"
     tools:context="com.kodbale.dkode.MainActivity">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/frame"></FrameLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:id="@+id/dumm"
         android:layout_height="wrap_content"
-        android:layout_below="@id/frame"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         >
         <Button
@@ -33,5 +31,10 @@
             android:layout_weight="1"
             />
     </LinearLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/dumm"
+        android:id="@+id/frame"></FrameLayout>
 
 </RelativeLayout>
