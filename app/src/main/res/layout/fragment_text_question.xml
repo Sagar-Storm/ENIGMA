@@ -1,12 +1,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+
     tools:context="com.kodbale.dkode.Fragments.TextQuestion">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="This is shown mate"/>
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/display_question"
+        tools:text="Dummy text"
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        />
 
 </FrameLayout>
