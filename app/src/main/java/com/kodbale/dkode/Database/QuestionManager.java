@@ -16,11 +16,14 @@ public class QuestionManager {
 
     private static DatabaseHelper mDatabaseHelper;
     private static QuestionManager mQuestionManager = null;
+    private static ArrayList<Question> mNotAnsweredList, mAnsweredList;
     private Context mAppContext;
 
     private QuestionManager(Context context) {
         mAppContext = context;
         mDatabaseHelper = new DatabaseHelper(mAppContext);
+        mNotAnsweredList = new ArrayList<>();
+        mAnsweredList = new ArrayList<>();
     }
 
     public static QuestionManager get(Context c) {
@@ -28,6 +31,14 @@ public class QuestionManager {
             mQuestionManager = new QuestionManager(c);
         }
         return mQuestionManager;
+    }
+
+    public ArrayList<Question> getNotAnsweredList() {
+        return mNotAnsweredList;
+    }
+
+    public ArrayList<Question> getAnsweredList() {
+        return mAnsweredList;
     }
 
     public void insertQuestion(Question question) {
@@ -50,9 +61,38 @@ public class QuestionManager {
 
     public void insertAllQuestions() {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryQuestions();
-        if(mQuestionCursor.getCount() == 0) {
-            mQuestionManager.insertQuestion(new Question("What is your name?", "Your name you know", 12345));
+        if(mQuestionCursor.getCount() == 0 ) {
+         //   mQuestionManager.insertQuestion(new Question("What is your name?", "Your name you know", 123, false, 0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it?", "answer not revealed", 123,false,0, false, true));
+        }
+        Log.i("i", "inserted 2 questions");
+        mQuestionCursor.close();
+    }
+
+    public void initializeNotAnsweredList() {
+        DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryNotAnswered();
+        Log.i("d", "size of not answered list" + mQuestionCursor.getCount());
+        mQuestionCursor.moveToFirst();
+        if(mQuestionCursor.getCount() != 0) {
+            for(int i = 0; i < mQuestionCursor.getCount(); i++) {
+               Question question = mQuestionCursor.getQuestion();
+                Log.i("i", "adding to not answeredlist");
+                mNotAnsweredList.add(question);
+            }
         }
         mQuestionCursor.close();
     }
+
+    public void initializeAnsweredList() {
+        DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryAnswered();
+        if(mQuestionCursor.getCount() != 0) {
+            for(int i = 0; i < mQuestionCursor.getCount(); i++) {
+                Question question = mQuestionCursor.getQuestion();
+                mAnsweredList.add(question);
+            }
+        }
+        mQuestionCursor.close();
+    }
+
+
 }

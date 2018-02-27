@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button submit;
     private Button skip;
     private FrameLayout frame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, LoginActivity.class));
         }
         QuestionManager.get(getApplicationContext()).insertAllQuestions();
+        Log.i("i", "inserted questions");
+        QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
+        QuestionManager.get(getApplicationContext()).initializeAnsweredList();
     }
 
     @Override
@@ -89,18 +94,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             if(data==null)
                 return;
-            //Getting the passed result
+
+            String solution = "something";
             String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
-            //Log.d(LOGTAG,"Have scan result in your app activity :"+ result);
+
+            solution = result;
+
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             alertDialog.setTitle("Scan result");
-            alertDialog.setMessage(result);
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
+
+            if(result.equals(solution)) {
+                alertDialog.setMessage("you successfully cracked the question");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialgo, int which) {
+                                Toast.makeText(getApplicationContext(), "you are in the next question!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                alertDialog.setMessage("you failed to answer the question");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+            }
             alertDialog.show();
 
         }
