@@ -92,15 +92,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         }
 
-        public Question getQuestion() {
+
+        Question createNewQuestion(int id, String questionText, String answerText, boolean isAnswered, int score, boolean isImage, boolean isText) {
             Question question = new Question();
-           int questionId = getInt(getColumnIndex((COLUMN_QUESTION_NO)));
-            String questionText = getString(getColumnIndex(COLUMN_QUESTION_TEXT));
-            String answerText = getString(getColumnIndex((COLUMN_ANSWER_TEXT)));
-            boolean isAnswered = (getInt(getColumnIndex(COLUMN_IS_ANSWERED)) != 0) ? true: false;
-            int score = getInt(getColumnIndex(COLUMN_SCORE));
-            boolean isText = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
-            boolean isImage = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
             question.setQuestionId(0);
             question.setQuestionText(questionText);
             question.setAnswerText(answerText);
@@ -108,6 +102,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             question.setScore(score);
             question.setIsImage(isImage);
             question.setIsText(isText);
+            return question;
+        }
+
+
+
+        public Question getQuestion() {
+           int questionId = getInt(getColumnIndex((COLUMN_QUESTION_NO)));
+            String questionText = getString(getColumnIndex(COLUMN_QUESTION_TEXT));
+            String answerText = getString(getColumnIndex((COLUMN_ANSWER_TEXT)));
+            boolean isAnswered = (getInt(getColumnIndex(COLUMN_IS_ANSWERED)) != 0) ? true: false;
+            int score = getInt(getColumnIndex(COLUMN_SCORE));
+            boolean isText = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
+            boolean isImage = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
+            Question question = createNewQuestion(0, questionText, answerText, isAnswered, score, isImage, isText);
+
             return question;
         }
     }

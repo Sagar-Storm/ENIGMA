@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView timer;
     private CountDownTimer countDownTimer;
     private long countDownTime = MAX_TIME;
+    private TextQuestion textQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skip = (Button) findViewById(R.id.skip);
         frame = (FrameLayout) findViewById(R.id.frame);
         timer = (TextView) findViewById(R.id.timer);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame,new TextQuestion()).commit();
+        textQuestion = new TextQuestion();
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         startCountDown();
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
@@ -166,10 +167,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*
         The method that gets the next available question and updates the activity and starts timer
          */
-        TextQuestion txt = new TextQuestion();
+
         Question question = new Question();
-        txt.setQuestion(question);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame,txt).commit();
+        textQuestion.setQuestion1(question);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame,textQuestion).commit();
         countDownTime = MAX_TIME;
         countDownTimer.start();
     }
