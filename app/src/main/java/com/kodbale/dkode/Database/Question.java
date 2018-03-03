@@ -16,7 +16,7 @@ public class Question {
     private boolean mIsText;
 
     public Question() {
-        mQuestionText = "";
+        mQuestionText = "Dummy Text";
         mAnswerText = "";
         mQuestionId = -1;
         mIsAnswerd = false;

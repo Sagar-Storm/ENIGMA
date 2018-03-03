@@ -3,6 +3,7 @@ package com.kodbale.dkode;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,24 +11,32 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
 import com.kodbale.dkode.Fragments.TextQuestion;
 import com.kodbale.dkode.Login.LoginActivity;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final int REQUEST_CODE_QR_SCAN = 101;
     private static final String LOGTAG = "QRSCAN";
+    private static final long MAX_TIME = 6000;
     private FirebaseAuth auth;
     private FirebaseUser user;
     private Button submit;
     private Button skip;
     private FrameLayout frame;
+    private TextView timer;
+    private CountDownTimer countDownTimer;
+    private long countDownTime = MAX_TIME;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +49,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         submit = (Button) findViewById(R.id.submit);
         skip = (Button) findViewById(R.id.skip);
         frame = (FrameLayout) findViewById(R.id.frame);
+        timer = (TextView) findViewById(R.id.timer);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.frame,new TextQuestion()).commit();
-
+        startCountDown();
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
         if ( user == null){
@@ -108,8 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialgo, int which) {
-                                Toast.makeText(getApplicationContext(), "you are in the next question!",
-                                        Toast.LENGTH_SHORT).show();
+                                setUpQuestion();
                             }
                         });
             } else {
@@ -124,6 +133,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             alertDialog.show();
 
         }
+    }
+
+    void startCountDown(){
+        countDownTimer = new CountDownTimer(countDownTime,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                countDownTime = millisUntilFinished;
+                int mins = (int) (countDownTime/1000) / 60;
+                int secs = (int) (countDownTime/1000) % 60;
+                String timeToShow = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
+                timer.setText(timeToShow);
+            }
+
+            @Override
+            public void onFinish() {
+                //Get next question
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Time up!");
+                alertDialog.setMessage("Oops times up");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialgo, int which) {
+                               setUpQuestion();
+                            }
+                        });
+            }
+        }.start();
+    }
+
+    void setUpQuestion(){
+        /*
+        The method that gets the next available question and updates the activity and starts timer
+         */
+        TextQuestion txt = new TextQuestion();
+        Question question = new Question();
+        txt.setQuestion(question);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame,txt).commit();
+        countDownTime = MAX_TIME;
+        countDownTimer.start();
     }
 
 }

@@ -44,7 +44,7 @@ public class TextQuestion extends Fragment {
         return view;
     }
 
-    private void setQuestion(Question question) {
+    public void setQuestion(Question question) {
         String q = question.getQuestionText();
         text.setText(q);
     }
