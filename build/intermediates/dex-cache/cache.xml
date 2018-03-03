@@ -12,6 +12,24 @@
     </item>
     <item
         is-multidex="false"
+        jar="/home/sagar/.android/build-cache/5745804524a7e5c4a4bd68cf03512e04d2adda88/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="0df1c4a70620cf2a0109f84ccc4a0aa45c861182">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/classes_cb874501f1984fb9ec986eb2d5271be7ce25db66.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/sagar/.gradle/caches/modules-2/files-2.1/com.google.zxing/core/3.3.0/73c49077166faa4c3c0059c5f583d1d7bd1475fe/core-3.3.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.3"
+        sha1="73c49077166faa4c3c0059c5f583d1d7bd1475fe">
+        <dex dex="/home/sagar/AndroidStudioProjects/DKODE/app/build/intermediates/pre-dexed/debug/core-3.3.0_61a5e7d8ed89d2aec079350f36d373c3ebac3310.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="/home/sagar/.android/build-cache/6e82d3c8c92331d3cb8fb99572f9d581f77dabf3/output/jars/classes.jar"
         jumboMode="false"
         optimize="true"
