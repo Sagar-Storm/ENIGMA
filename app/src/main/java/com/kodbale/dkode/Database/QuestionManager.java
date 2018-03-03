@@ -13,7 +13,7 @@ public class QuestionManager {
 
     public static final String TAG = "QuestionManager";
 
-
+    private static int mQuestionsAnswered = 0;
     private static DatabaseHelper mDatabaseHelper;
     private static QuestionManager mQuestionManager = null;
     private static ArrayList<Question> mNotAnsweredList, mAnsweredList;
@@ -31,6 +31,14 @@ public class QuestionManager {
             mQuestionManager = new QuestionManager(c);
         }
         return mQuestionManager;
+    }
+
+    public  void incrementQuestionAnswered() {
+            mQuestionsAnswered++;
+    }
+
+    public int getQuestionsAnswered() {
+        return mQuestionsAnswered;
     }
 
     public ArrayList<Question> getNotAnsweredList() {
@@ -63,7 +71,12 @@ public class QuestionManager {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryQuestions();
         if(mQuestionCursor.getCount() == 0 ) {
          //   mQuestionManager.insertQuestion(new Question("What is your name?", "Your name you know", 123, false, 0, false, true));
-            mQuestionManager.insertQuestion(new Question("That's it?", "answer not revealed", 123,false,0, false, true));
+           // mQuestionManager.insertQuestion(new Question("That's it?", "answer not revealed", 123,false,0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it1?", "answer not revealed", 123,false,0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it2?", "answer not revealed", 123,false,0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it3?", "answer not revealed", 123,false,0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it4?", "answer not revealed", 123,false,0, false, true));
+
         }
         Log.i("i", "inserted 2 questions");
         mQuestionCursor.close();
@@ -78,6 +91,7 @@ public class QuestionManager {
                Question question = mQuestionCursor.getQuestion();
                 Log.i("i", "adding to not answeredlist");
                 mNotAnsweredList.add(question);
+                mQuestionCursor.moveToNext();
             }
         }
         mQuestionCursor.close();
@@ -93,6 +107,21 @@ public class QuestionManager {
             }
         }
         mQuestionCursor.close();
+    }
+
+    public Question getNextQuestion() {
+        if(mNotAnsweredList.size() == 0) {
+            Question question = new Question();
+            question.setQuestionText("you finished all");
+            return question;
+        }
+        Log.i("d", "size before" + mNotAnsweredList.size());
+        Question question = mNotAnsweredList.get(0);
+        mAnsweredList.add(question);
+        mNotAnsweredList.remove(question);
+        Log.i("d", "size after" + mNotAnsweredList.size() + question.getQuestionText());
+
+        return question;
     }
 
 

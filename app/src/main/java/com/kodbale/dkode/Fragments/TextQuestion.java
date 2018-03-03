@@ -35,24 +35,28 @@ public class TextQuestion extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_text_question, container, false);
+
         ArrayList<Question> notAnsweredList = QuestionManager.get(getContext()).getNotAnsweredList();
-        Log.i("d", "size is " + notAnsweredList.size());
-       // Collections.shuffle(notAnsweredList);
+        ArrayList<Question>  answeredList = QuestionManager.get(getContext()).getAnsweredList();
+
+
+        //TODO
+        //update the database to reflect that the item has been isanswered with score = 0
         Question question = new Question(notAnsweredList.get(0));
+
+        notAnsweredList.remove(question);
+        answeredList.add(question);
+
         text = (TextView) view.findViewById(R.id.display_question);
         setQuestion(question);
         return view;
     }
 
     public void setQuestion(Question question) {
-        //  String q = question.getQuestionText();
-        text.setText("inside next question4");
+        String questionText = question.getQuestionText();
+        text.setText(questionText);
     }
 
-    public void setQuestion1(Question question) {
-        //  String q = question.getQuestionText();
-        text.setText("inside next damar questionhfksdhfkhksfkdj");
-    }
 
 
 }
