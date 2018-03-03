@@ -85,6 +85,7 @@ public class QuestionManager {
 
     public void initializeAnsweredList() {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryAnswered();
+        mQuestionCursor.moveToFirst();
         if(mQuestionCursor.getCount() != 0) {
             for(int i = 0; i < mQuestionCursor.getCount(); i++) {
                 Question question = mQuestionCursor.getQuestion();

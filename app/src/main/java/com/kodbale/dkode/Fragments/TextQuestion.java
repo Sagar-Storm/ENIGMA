@@ -45,8 +45,13 @@ public class TextQuestion extends Fragment {
     }
 
     public void setQuestion(Question question) {
-        String q = question.getQuestionText();
-        text.setText(q);
+        //  String q = question.getQuestionText();
+        text.setText("inside next question4");
+    }
+
+    public void setQuestion1(Question question) {
+        //  String q = question.getQuestionText();
+        text.setText("inside next damar questionhfksdhfkhksfkdj");
     }
 
 
