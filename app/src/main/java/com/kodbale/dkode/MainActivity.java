@@ -8,11 +8,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,6 +42,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long countDownTime = MAX_TIME;
     private TextQuestion textQuestion;
     private QuestionManager mQuestionManager;
+    private android.support.v7.widget.Toolbar toolbar;
+
+
+    // Action bar
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.score:
+                // TODO create a score activity
+                break;
+            case R.id.info:
+                // TODO create a info activity
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         frame = (FrameLayout) findViewById(R.id.frame);
         timer = (TextView) findViewById(R.id.timer);
         textQuestion = new TextQuestion();
+        toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
+        setSupportActionBar(toolbar);
+
         getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         startCountDown();
         submit.setOnClickListener(this);
@@ -191,4 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return question;
     }
 
+
+    // Toolbar
 }

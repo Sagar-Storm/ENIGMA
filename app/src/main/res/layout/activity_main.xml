@@ -4,14 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+
     tools:context="com.kodbale.dkode.MainActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="6dp"
+        android:id="@+id/tools"></android.support.v7.widget.Toolbar>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="06:00"
+        android:layout_below="@id/tools"
         android:id="@+id/timer"
         android:textAlignment="center"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>

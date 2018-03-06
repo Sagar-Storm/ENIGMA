@@ -7,6 +7,12 @@
     android:padding="16dp"
     tools:context="com.kodbale.dkode.Login.LoginActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true">
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,5 +36,12 @@
         android:text="Let's Go"
         android:layout_below="@id/group_pass"/>
 
-
+    </LinearLayout>
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loginProgress"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        />
 </RelativeLayout>
