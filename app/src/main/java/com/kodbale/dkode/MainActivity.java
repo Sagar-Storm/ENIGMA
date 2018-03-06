@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CountDownTimer countDownTimer;
     private long countDownTime = MAX_TIME;
     private TextQuestion textQuestion;
+    private QuestionManager mQuestionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startCountDown();
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
+
+        mQuestionManager = QuestionManager.get(getApplicationContext());
         if ( user == null){
             startActivity(new Intent(this, LoginActivity.class));
         }
@@ -63,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i("i", "inserted questions");
         QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
         QuestionManager.get(getApplicationContext()).initializeAnsweredList();
+        String damn = "";
+        for(Question q: mQuestionManager.getNotAnsweredList()){
+            damn += q.getQuestionText() + "\n";
+        }
+        Log.i("i", "djkdghk "  + damn);
     }
 
     @Override
@@ -119,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialgo, int which) {
+                                QuestionManager.get(getApplicationContext()).incrementQuestionAnswered();
                                 setUpQuestion();
                             }
                         });
@@ -167,12 +176,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*
         The method that gets the next available question and updates the activity and starts timer
          */
-
-        Question question = new Question();
-        textQuestion.setQuestion1(question);
+        if(mQuestionManager.getQuestionsAnswered() == 5) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        Question question = getNextQuestion();
+        textQuestion.setQuestion(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame,textQuestion).commit();
         countDownTime = MAX_TIME;
         countDownTimer.start();
+    }
+
+    public Question getNextQuestion() {
+        Question question = mQuestionManager.getNextQuestion();
+        return question;
     }
 
 }

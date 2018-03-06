@@ -116,7 +116,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             boolean isText = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
             boolean isImage = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
             Question question = createNewQuestion(0, questionText, answerText, isAnswered, score, isImage, isText);
-
             return question;
         }
     }
