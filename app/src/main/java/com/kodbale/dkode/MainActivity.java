@@ -20,6 +20,8 @@ import android.widget.Toolbar;
 import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kodbale.dkode.Activities.InfoActivity;
+import com.kodbale.dkode.Activities.ScoreActivity;
 import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
 import com.kodbale.dkode.Fragments.TextQuestion;
@@ -58,9 +60,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (item.getItemId()){
             case R.id.score:
                 // TODO create a score activity
+                startActivity(new Intent(getApplicationContext(), ScoreActivity.class));
                 break;
             case R.id.info:
                 // TODO create a info activity
+                startActivity(new Intent(getApplicationContext(), InfoActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -220,6 +224,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return question;
     }
 
-
-    // Toolbar
 }

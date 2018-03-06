@@ -46,7 +46,6 @@ public class TextQuestion extends Fragment {
 
         notAnsweredList.remove(question);
         answeredList.add(question);
-
         text = (TextView) view.findViewById(R.id.display_question);
         setQuestion(question);
         return view;
