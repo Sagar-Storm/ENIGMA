@@ -39,12 +39,11 @@ public class TextQuestion extends Fragment {
         ArrayList<Question> notAnsweredList = QuestionManager.get(getContext()).getNotAnsweredList();
         ArrayList<Question>  answeredList = QuestionManager.get(getContext()).getAnsweredList();
 
-
         //TODO
         //update the database to reflect that the item has been isanswered with score = 0
         Question question = new Question(notAnsweredList.get(0));
 
-        notAnsweredList.remove(question);
+        notAnsweredList.remove(0);
         answeredList.add(question);
         text = (TextView) view.findViewById(R.id.display_question);
         setQuestion(question);
