@@ -21,9 +21,11 @@ import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kodbale.dkode.Activities.InfoActivity;
+import com.kodbale.dkode.Activities.Main2Activity;
 import com.kodbale.dkode.Activities.ScoreActivity;
 import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
+import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.Fragments.TextQuestion;
 import com.kodbale.dkode.Login.LoginActivity;
 
@@ -34,8 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_QR_SCAN = 101;
     private static final String LOGTAG = "QRSCAN";
     private static final long MAX_TIME = 6000;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
+
     private Button submit;
     private Button skip;
     private FrameLayout frame;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long countDownTime = MAX_TIME;
     private TextQuestion textQuestion;
     private QuestionManager mQuestionManager;
+    private StatusManager mStatusManager;
     private android.support.v7.widget.Toolbar toolbar;
 
 
@@ -76,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Instantiations
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
         submit = (Button) findViewById(R.id.submit);
         skip = (Button) findViewById(R.id.skip);
         frame = (FrameLayout) findViewById(R.id.frame);
@@ -92,18 +92,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skip.setOnClickListener(this);
 
         mQuestionManager = QuestionManager.get(getApplicationContext());
-        if ( user == null){
+        mStatusManager = StatusManager.get(getApplicationContext());
+
+        if (mStatusManager.getUser() == null){
+            mQuestionManager = null;
+            mStatusManager = null;
             startActivity(new Intent(this, LoginActivity.class));
+            Toast.makeText(getApplicationContext(), "You should login to continue", Toast.LENGTH_SHORT).show();
         }
+
         QuestionManager.get(getApplicationContext()).insertAllQuestions();
         Log.i("i", "inserted questions");
         QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
         QuestionManager.get(getApplicationContext()).initializeAnsweredList();
-        String damn = "";
-        for(Question q: mQuestionManager.getNotAnsweredList()){
-            damn += q.getQuestionText() + "\n";
-        }
-        Log.i("i", "djkdghk "  + damn);
     }
 
     @Override
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              startActivityForResult( i,REQUEST_CODE_QR_SCAN);
              break;
          case R.id.skip:  //TODO get the next question and create a update the ui
+             setUpQuestion();
              break;
      }
     }
@@ -153,14 +155,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             solution = result;
 
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            alertDialog.setTitle("Scan result");
+            alertDialog.setTitle("Scan Result");
 
             if(result.equals(solution)) {
                 alertDialog.setMessage("you successfully cracked the question");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialgo, int which) {
-                                QuestionManager.get(getApplicationContext()).incrementQuestionAnswered();
+                             //   QuestionManager.get(getApplicationContext()).incrementQuestionAnswered();
                                 setUpQuestion();
                             }
                         });
@@ -174,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         });
             }
             alertDialog.show();
-
         }
     }
 
@@ -201,27 +202,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                setUpQuestion();
                             }
                         });
+                alertDialog.setCancelable(false);
+                setUpQuestion();
             }
         }.start();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     void setUpQuestion(){
         /*
         The method that gets the next available question and updates the activity and starts timer
          */
-        if(mQuestionManager.getQuestionsAnswered() == 5) {
-            startActivity(new Intent(this, LoginActivity.class));
+//        if(mQuestionManager.getQuestionsAnswered() == 5) {
+//            startActivity(new Intent(this, LoginActivity.class));
+//        }
+        Question question = mQuestionManager.getNextQuestion();
+        if(question == null) {
+            Intent intent = new Intent(this, Main2Activity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
-        Question question = getNextQuestion();
         textQuestion.setQuestion(question);
         getSupportFragmentManager().beginTransaction().replace(R.id.frame,textQuestion).commit();
         countDownTime = MAX_TIME;
         countDownTimer.start();
     }
 
-    public Question getNextQuestion() {
-        Question question = mQuestionManager.getNextQuestion();
-        return question;
-    }
+
 
 }
