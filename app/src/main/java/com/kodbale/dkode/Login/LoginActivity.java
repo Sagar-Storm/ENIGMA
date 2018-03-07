@@ -13,7 +13,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.kodbale.dkode.Activities.BufferActivity;
+import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
 
@@ -53,8 +55,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "Check your creds!",
                                     Toast.LENGTH_SHORT).show();
                         }else{
+                            StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());
+                            StatusManager.get(getApplicationContext()).setUser(FirebaseAuth.getInstance().getCurrentUser());
                             startActivity(new Intent(getApplicationContext(), BufferActivity.class));
-                            
+                            finish();
                         }
                     }
                 });

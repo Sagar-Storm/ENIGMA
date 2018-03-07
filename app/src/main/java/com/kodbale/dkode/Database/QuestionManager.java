@@ -13,10 +13,10 @@ public class QuestionManager {
 
     public static final String TAG = "QuestionManager";
 
-    private static int mQuestionsAnswered = 0;
+
     private static DatabaseHelper mDatabaseHelper;
     private static QuestionManager mQuestionManager = null;
-    private static ArrayList<Question> mNotAnsweredList, mAnsweredList;
+    private static ArrayList<Question> mNotAnsweredList = null, mAnsweredList = null;
     private Context mAppContext;
 
     private QuestionManager(Context context) {
@@ -33,12 +33,29 @@ public class QuestionManager {
         return mQuestionManager;
     }
 
-    public  void incrementQuestionAnswered() {
-            mQuestionsAnswered++;
+    public int deleteFromNotAnswered(int index) {
+        if(mNotAnsweredList == null || mNotAnsweredList.size() == 0) {
+            return 0 ;
+        }
+        mNotAnsweredList.remove(index);
+        return 1;
+
     }
 
-    public int getQuestionsAnswered() {
-        return mQuestionsAnswered;
+    public int insertIntoNotAnswered(Question question) {
+       if(mNotAnsweredList == null) {
+           return 0;
+       }
+       mNotAnsweredList.add(question);
+       return 1;
+    }
+
+    public int insertIntoAnswered(Question question) {
+        if(mAnsweredList == null) {
+            return 0;
+        }
+        mAnsweredList.add(question);
+        return 1;
     }
 
     public ArrayList<Question> getNotAnsweredList() {
@@ -110,17 +127,14 @@ public class QuestionManager {
     }
 
     public Question getNextQuestion() {
-        if(mNotAnsweredList.size() == 0) {
-            Question question = new Question();
-            question.setQuestionText("you finished all");
-            return question;
+        if(mNotAnsweredList == null || mNotAnsweredList.size() == 0) {
+           return null;
         }
         Log.i("d", "size before" + mNotAnsweredList.size());
         Question question = mNotAnsweredList.get(0);
         mAnsweredList.add(question);
-        mNotAnsweredList.remove(question);
+        mNotAnsweredList.remove(0);
         Log.i("d", "size after" + mNotAnsweredList.size() + question.getQuestionText());
-
         return question;
     }
 
