@@ -14,31 +14,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".Login.LoginActivity" />
         <activity android:name=".Activities.BufferActivity" />
         <activity android:name=".Activities.InfoActivity" />
         <activity android:name=".Activities.ScoreActivity" />
-        <activity android:name=".Activities.SplashActivity">
-=======
-        <activity android:name=".Activities.BufferActivity">
->>>>>>> master
+        <activity android:name=".Activities.SplashActivity" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
         <activity android:name=".Activities.EndingActivity"></activity>
-=======
-        <activity android:name=".Login.LoginActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".Activities.InfoActivity" />
-        <activity android:name=".Activities.ScoreActivity"></activity>
         <activity android:name=".Activities.Main2Activity"></activity>
->>>>>>> master
     </application>
 
 </manifest>
