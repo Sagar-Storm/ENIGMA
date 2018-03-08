@@ -1,6 +1,7 @@
 package com.kodbale.dkode.Login;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,6 +48,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(),"Fill this thing up!",Toast.LENGTH_SHORT).show();
             return;
         }
+        if(!isNetworkAvailableAndConnected()) {
+            Toast.makeText(getApplicationContext(),"top up first", Toast.LENGTH_SHORT).show();
+            return ;
+        }
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -62,5 +67,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+    }
+
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+        return isNetworkConnected;
     }
 }

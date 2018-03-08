@@ -127,7 +127,7 @@ public class QuestionManager {
     }
 
     public Question getNextQuestion() {
-        if(mNotAnsweredList == null || mNotAnsweredList.size() == 0) {
+        if( mNotAnsweredList.size() == 0) {
            return null;
         }
         Log.i("d", "size before" + mNotAnsweredList.size());

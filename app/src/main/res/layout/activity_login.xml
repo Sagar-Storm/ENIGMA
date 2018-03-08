@@ -13,21 +13,23 @@
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true">
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/group_id"
-        android:hint="Group ID"
-        android:inputType="text"
-        />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/group_id"
-        android:id="@+id/group_pass"
-        android:hint="Passcode"
-        android:inputType="textPassword"/>
+        <EditText
+            android:id="@+id/group_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Group ID"
+            android:inputType="text"
+            android:text="sagar@a.com" />
+
+        <EditText
+            android:id="@+id/group_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/group_id"
+            android:hint="Passcode"
+            android:inputType="textPassword"
+            android:text="sagarsagar" />
 
     <Button
         android:layout_width="match_parent"

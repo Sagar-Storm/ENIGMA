@@ -14,6 +14,7 @@ import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.Login.LoginActivity;
 import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
+import com.kodbale.dkode.Services.ContestRunner;
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -40,25 +41,14 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             finish();
         }
 
-//        countDownTimer = new CountDownTimer(waitTime,1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                finish();
-//            }
-//        }.start();
-
     }
 
     @Override
     public void onClick(View v) {
-            startActivity(new Intent(this, MainActivity.class));
+
+            Intent i = ContestRunner.newIntent(getApplicationContext());
+            startService(i);
+             startActivity(new Intent(this, MainActivity.class));
             finish();
     }
 }
