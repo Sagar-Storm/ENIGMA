@@ -141,6 +141,7 @@ public class QuestionManager {
             for(int i = 0; i < mQuestionCursor.getCount(); i++) {
                 Question question = mQuestionCursor.getQuestion();
                 mAnsweredList.add(question);
+                mQuestionCursor.moveToNext();
             }
         }
         mQuestionCursor.close();
@@ -164,9 +165,13 @@ public class QuestionManager {
 
     public void updateAnsweredStatusInDb() {
         int id = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getQuestionId();
-
         mDatabaseHelper.updateAnsweredStatus(id) ;
+    }
 
+    public void updateNumberOfTries() {
+        int numberOfTries = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getNumberOfTries();
+        int id = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getQuestionId();
+        mDatabaseHelper.updateNumberOfTries(id, numberOfTries);
     }
 
 

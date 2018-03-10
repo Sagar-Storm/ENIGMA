@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COLUMN_SCORE = "score";
     private static final String COLUMN_IS_TEXT = "is_text";
     private static final String COLUMN_IS_IMAGE = "is_image";
+    private static final String COLUMN_NUMBER_OF_TRIES = "number_of_tries";
 
 
 
@@ -38,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table questions (" + "question_no integer primary key autoincrement, question_text varchar(1000), answer_text varchar(1000), question_uuid int, is_answered int, score int, is_text int, is_image int)");
+        db.execSQL("create table questions (" + "question_no integer primary key autoincrement, question_text varchar(1000), answer_text varchar(1000), question_uuid int, is_answered int, score int, is_text int, is_image int, number_of_tries int)");
     }
 
     @Override
@@ -65,6 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         cv.put(COLUMN_SCORE, question.getScore());
         cv.put(COLUMN_IS_IMAGE, isTrue(question.isIsImage()));
         cv.put(COLUMN_IS_TEXT, isTrue(question.isIsText()));
+        cv.put(COLUMN_NUMBER_OF_TRIES, 0);
         Log.i("inserted", "inserted mate");
         return getReadableDatabase().insert(TABLE_QUESTIONS, null, cv);
     }
@@ -84,6 +86,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public QuestionCursor queryQuestions() {
         Cursor wrapped = getReadableDatabase().query(TABLE_QUESTIONS, null, null, null, null, null, null);
         return new QuestionCursor(wrapped);
+    }
+
+    public void updateNumberOfTries(int id, int numberOfTries) {
+        ContentValues cv = new ContentValues();
+        String _numberOfTries = Integer.toString(numberOfTries);
+        String _id = Integer.toString(id);
+        cv.put("number_of_tries", _numberOfTries);
+        getWritableDatabase().update(TABLE_QUESTIONS ,cv, COLUMN_QUESTION_UUID + "=" + _id, null);
     }
 
     public QuestionCursor queryNotAnswered() {
@@ -116,7 +126,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         }
 
 
-        Question createNewQuestion(int id, String questionText, String answerText, boolean isAnswered, int score, boolean isImage, boolean isText) {
+        Question createNewQuestion(int id, String questionText, String answerText, boolean isAnswered, int score, boolean isImage, boolean isText, int numberOfTries) {
             Question question = new Question();
             question.setQuestionId(id);
             question.setQuestionText(questionText);
@@ -125,12 +135,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             question.setScore(score);
             question.setIsImage(isImage);
             question.setIsText(isText);
+            question.setNumberOfTries(numberOfTries);
             return question;
         }
 
 
 
         public Question getQuestion() {
+
            int questionId = getInt(getColumnIndex((COLUMN_QUESTION_UUID)));
             String questionText = getString(getColumnIndex(COLUMN_QUESTION_TEXT));
             String answerText = getString(getColumnIndex((COLUMN_ANSWER_TEXT)));
@@ -138,8 +150,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             int score = getInt(getColumnIndex(COLUMN_SCORE));
             boolean isText = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
             boolean isImage = (getInt(getColumnIndex(COLUMN_IS_TEXT)) != 0) ? true: false;
-            Question question = createNewQuestion(questionId, questionText, answerText, isAnswered, score, isImage, isText);
+            int numberOfTries = getInt(getColumnIndex(COLUMN_NUMBER_OF_TRIES));
+            Question question = createNewQuestion(questionId, questionText, answerText, isAnswered, score, isImage, isText, numberOfTries);
             return question;
+
         }
     }
 

@@ -11,7 +11,7 @@ public class CurrentQuestion  {
 
     CurrentQuestion(Question question, int timeRemaining) {
         mQuestion = question;
-        mTimeRemaining =timeRemaining;
+        mTimeRemaining = timeRemaining;
     }
 
     public void setCurrentQuestion(Question question) {
@@ -29,5 +29,7 @@ public class CurrentQuestion  {
     public int getTimeRemaining() {
         return mTimeRemaining;
     }
+
+
 
 }

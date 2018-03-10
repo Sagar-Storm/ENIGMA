@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialgo, int which) {
-
+                                countDownTimer.cancel();
                                 mStatusManager.updateScoreForCurrentQuestion();
                                 mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                 long questionUUID = getQuestionUUID();
@@ -196,6 +196,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
+                                mStatusManager.incrementNoOfTries();
+                                mQuestionManager.updateNumberOfTries();
+                                if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
+                                    mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                                    mQuestionManager.updateAnsweredStatusInDb();
+                                    setUpQuestion();
+                                }
                                 dialog.dismiss();
                             }
                         });

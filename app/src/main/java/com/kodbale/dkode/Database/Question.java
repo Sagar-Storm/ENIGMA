@@ -14,6 +14,7 @@ public class Question {
     private int mScore;
     private boolean mIsImage;
     private boolean mIsText;
+    private int mNumberOfTries;
 
     public Question() {
         mQuestionText = "Dummy Text";
@@ -23,8 +24,21 @@ public class Question {
         mScore = 0;
         mIsImage = false;
         mIsText = true;
+        mNumberOfTries = 0;
     }
 
+
+    public int getNumberOfTries() {
+        return mNumberOfTries;
+    }
+
+    public void setNumberOfTries(int numberOfTries) {
+        mNumberOfTries = numberOfTries;
+    }
+
+    public void incrementNumberOfTries() {
+        mNumberOfTries++;
+    }
 
     public Question(Question q) {
         this.mQuestionText = q.mQuestionText;
@@ -35,6 +49,7 @@ public class Question {
         this.mIsImage = q.mIsImage;
         this.mIsText = q.mIsText;
     }
+
     public Question(String mQuestionText, String mAnswerText, int mQuestionId, boolean mIsAnswerd,
         int  mScore, boolean mIsImage, boolean mIsText
     ) {

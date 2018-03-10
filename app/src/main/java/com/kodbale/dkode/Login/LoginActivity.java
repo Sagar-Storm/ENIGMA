@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kodbale.dkode.Activities.BufferActivity;
 import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.MainActivity;
@@ -63,6 +64,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());
                             StatusManager.get(getApplicationContext()).setUser(FirebaseAuth.getInstance().getCurrentUser());
+                            StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
                             startActivity(new Intent(getApplicationContext(), BufferActivity.class));
                             Log.i("i", "logging in");
                             finish();

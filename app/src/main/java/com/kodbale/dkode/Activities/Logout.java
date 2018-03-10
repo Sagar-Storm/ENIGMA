@@ -28,12 +28,16 @@ public class Logout extends AppCompatActivity {
 
     public void exitApp() {
             StatusManager.get(getApplication()).getAuth().signOut();
+
             if(StatusManager.get(getApplicationContext()).getAuth().getCurrentUser() == null) {
                 Log.i("after signing out", "i have logged out");
             }
+
             StatusManager.get(getApplication()).setAuth(null);
             Log.i("before logout", StatusManager.get(getApplicationContext()).getUser().getEmail());
             StatusManager.get(getApplicationContext()).setUser(null);
+            StatusManager.get(getApplicationContext()).setFirebaseDatabase(null);
+
             if(StatusManager.get(getApplicationContext()).getUser() == null) {
                 Log.i("i", "successfully set it");
             } else {
