@@ -21,6 +21,7 @@ import com.blikoon.qrcodescanner.QrCodeActivity;
 import com.kodbale.dkode.Activities.InfoActivity;
 import com.kodbale.dkode.Activities.Logout;
 import com.kodbale.dkode.Activities.ScoreActivity;
+import com.kodbale.dkode.Database.CurrentQuestion;
 import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
 import com.kodbale.dkode.Database.StatusManager;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
     private android.support.v7.widget.Toolbar toolbar;
+
+    private CurrentQuestion mCurrentQuestion;
 
 
 
@@ -85,13 +88,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+
         startCountDown();
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
         mQuestionManager = QuestionManager.get(getApplicationContext());
         mStatusManager = StatusManager.get(getApplicationContext());
+        mCurrentQuestion = mStatusManager.getCurrentQuestion();
 
         if (mStatusManager.getUser() == null){
             mQuestionManager = null;
@@ -102,8 +106,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         QuestionManager.get(getApplicationContext()).insertAllQuestions();
         Log.i("i", "inserted questions");
+
         QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
         QuestionManager.get(getApplicationContext()).initializeAnsweredList();
+
+        if(QuestionManager.get(getApplicationContext()).getNotAnsweredList().size() == 0) {
+            Log.i("answered", "you have answered all before");
+            Intent intent = new Intent(this, Logout.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+        }
+
     }
 
     @Override
@@ -115,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              break;
          case R.id.skip:  //TODO get the next question and create a update the ui
              mStatusManager.incrementQuestionSkipped();
+             mStatusManager.updateAnsweredStatusForCurrentQuestion();
+             mQuestionManager.updateAnsweredStatusInDb();
              setUpQuestion();
              break;
      }
@@ -162,9 +180,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialgo, int which) {
-                                mStatusManager.incrementQuestionAnswered();
+
                                 mStatusManager.updateScoreForCurrentQuestion();
+                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                                long questionUUID = getQuestionUUID();
+                                int currentQuestionScore = getCurrentQuestionScore();
+                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
+                                mQuestionManager.updateAnsweredStatusInDb();
                                 setUpQuestion();
+
                             }
                         });
             } else {
@@ -180,17 +204,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    public int getQuestionUUID() {
+        return mStatusManager.getCurrentQuestion().getQuestion().getQuestionId();
+    }
+
+    public int getCurrentQuestionScore() {
+
+        int score =  mStatusManager.getCurrentQuestion().getQuestion().getScore();
+        Log.i("i", "score " + score);
+        return score;
+    }
+
+
     void startCountDown(){
         countDownTimer = new CountDownTimer(countDownTime,1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
+
                 countDownTime = millisUntilFinished;
                 int mins = (int) (countDownTime/1000) / 60;
                 int secs = (int) (countDownTime/1000) % 60;
                 String timeToShow = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
                 timer.setText(timeToShow);
                 mStatusManager.setCurrentQuestionTimeRemaining((int)countDownTime/1000);
+
             }
 
             @Override
@@ -199,15 +238,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle("Time up!");
                 alertDialog.setMessage("Oops times up");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialgo, int which) {
-                                mStatusManager.incrementQuestionTimedOut();
-                                mStatusManager.updateScoreForCurrentQuestion();
-                                setUpQuestion();
-                            }
-                        });
-                alertDialog.setCancelable(false);
+
+                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                mQuestionManager.updateAnsweredStatusInDb();
+
                 setUpQuestion();
             }
         }.start();
@@ -235,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
-
         } else {
             mStatusManager.setCurrentQuestion(question);
             textQuestion.setQuestion(question);

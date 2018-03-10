@@ -1,6 +1,7 @@
 package com.kodbale.dkode.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kodbale.dkode.Activities.Logout;
 import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
 import com.kodbale.dkode.Database.StatusManager;
@@ -43,11 +45,9 @@ public class TextQuestion extends Fragment {
         //TODO
         //update the database to reflect that the item has been isanswered with score = 0
         Question question = notAnsweredList.get(0);
-
         notAnsweredList.remove(0);
         answeredList.add(question);
         StatusManager.get(getContext()).setCurrentQuestion(question);
-
         text = (TextView) view.findViewById(R.id.display_question);
         setQuestion(question);
         return view;

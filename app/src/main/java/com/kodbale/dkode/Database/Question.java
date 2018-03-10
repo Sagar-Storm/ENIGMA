@@ -72,7 +72,7 @@ public class Question {
         return mIsText;
     }
 
-    public long getQuestionId() {
+    public int getQuestionId() {
         return mQuestionId;
     }
 

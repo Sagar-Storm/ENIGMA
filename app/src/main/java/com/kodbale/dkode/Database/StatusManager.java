@@ -1,6 +1,7 @@
 package com.kodbale.dkode.Database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,14 +31,16 @@ public class StatusManager {
 
     private StatusManager(Context context) {
         mAppContext = context ;
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
+        mAuth = null;
+        mUser = null;
+        if(mUser != null) Log.i("i", mUser.getEmail());
         mCurrentQuestion  = new CurrentQuestion(null, 300);
     }
 
     public static StatusManager get(Context c) {
         if(mStatusManager == null) {
             mStatusManager = new StatusManager(c);
+            Log.i("i", "initializing, initializing");
         }
         return mStatusManager;
     }
@@ -53,6 +56,10 @@ public class StatusManager {
     public void updateScoreForCurrentQuestion() {
         int score = mCurrentQuestion.getTimeRemaining() * 3;
         mCurrentQuestion.getQuestion().setScore(score);
+    }
+
+    public void updateAnsweredStatusForCurrentQuestion (){
+        mCurrentQuestion.getQuestion().setIsAnswered(true);
     }
 
     public CurrentQuestion getCurrentQuestion() {
