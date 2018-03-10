@@ -1,9 +1,14 @@
 package com.kodbale.dkode;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +31,7 @@ import com.kodbale.dkode.Activities.ScoreActivity;
 import com.kodbale.dkode.Database.Question;
 import com.kodbale.dkode.Database.QuestionManager;
 import com.kodbale.dkode.Database.StatusManager;
+import com.kodbale.dkode.Fragments.PicFragment;
 import com.kodbale.dkode.Fragments.TextQuestion;
 import com.kodbale.dkode.Login.LoginActivity;
 
@@ -44,9 +50,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CountDownTimer countDownTimer;
     private long countDownTime = MAX_TIME;
     private TextQuestion textQuestion;
+    private PicFragment imageQuestion;
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
     private android.support.v7.widget.Toolbar toolbar;
+    private int camRequestCode = 107;
 
 
     // Action bar
@@ -61,15 +69,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.score:
-                // TODO create a score activity
                 startActivity(new Intent(getApplicationContext(), ScoreActivity.class));
                 break;
             case R.id.info:
-                // TODO create a info activity
                 startActivity(new Intent(getApplicationContext(), InfoActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == camRequestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+            } else {
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Permission Error");
+                alertDialog.setMessage("But I really need the permission to work?");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                            }
+                        });
+                alertDialog.show();
+                ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
+            }
+        }
     }
 
     @Override
@@ -85,6 +114,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textQuestion = new TextQuestion();
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
+
+        /*
+        Asking for permissions
+         */
+        Context context = getApplicationContext();
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
+        }
 
         getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         startCountDown();
@@ -111,16 +149,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
      switch (v.getId()){
          case R.id.submit:
+             submit.setEnabled(false);
              Intent i = new Intent(MainActivity.this,QrCodeActivity.class);
              startActivityForResult( i,REQUEST_CODE_QR_SCAN);
              break;
-         case R.id.skip:  //TODO get the next question and create a update the ui
+         case R.id.skip:
              setUpQuestion();
              break;
      }
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        submit.setEnabled(true);
         if(resultCode != Activity.RESULT_OK)
         {
             Log.d(LOGTAG,"COULD NOT GET A GOOD RESULT.");
@@ -227,8 +267,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         }
-        textQuestion.setQuestion(question);
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame,textQuestion).commit();
+        if (question.isIsText()) {
+            textQuestion.setQuestion(question);
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+        }else if (question.isIsImage()){
+            /*
+            TODO: Add the image to the database
+             */
+
+            //imageQuestion.setImageQuestion();
+        }
         countDownTime = MAX_TIME;
         countDownTimer.start();
     }

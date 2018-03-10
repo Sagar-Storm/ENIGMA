@@ -1,6 +1,7 @@
 package com.kodbale.dkode.Fragments;
 
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -33,8 +34,9 @@ public class PicFragment extends Fragment {
         img = (ImageView) v.findViewById(R.id.setImageQ);
         return v;
     }
-    public void setImageQuestion(Drawable drawable){
-        img.setImageDrawable(drawable);
+
+    public void setImageQuestion(Bitmap bits){
+        img.setImageBitmap(bits);
     }
 
 }
