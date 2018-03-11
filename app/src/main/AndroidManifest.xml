@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -23,14 +24,17 @@
         <activity android:name=".Login.LoginActivity" />
         <activity android:name=".Activities.BufferActivity" />
         <activity android:name=".Activities.InfoActivity" />
-        <activity android:name=".Activities.ScoreActivity" />
         <activity android:name=".Activities.SplashActivity" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".Activities.EndingActivity"></activity>
-        <activity android:name=".Activities.Main2Activity"></activity>
+        <activity android:name=".Activities.ScoreActivity"></activity>
+        <activity android:name=".Activities.Logout">
+        </activity>
+        <service android:name=".Services.ContestRunner"></service>
+
     </application>
 
 </manifest>

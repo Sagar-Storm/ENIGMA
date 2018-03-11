@@ -1,9 +1,11 @@
 package com.kodbale.dkode.Login;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kodbale.dkode.Activities.BufferActivity;
 import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.MainActivity;
@@ -47,6 +50,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(),"Fill this thing up!",Toast.LENGTH_SHORT).show();
             return;
         }
+        if(!isNetworkAvailableAndConnected()) {
+            Toast.makeText(getApplicationContext(),"top up first", Toast.LENGTH_SHORT).show();
+            return ;
+        }
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -54,13 +61,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         if (!task.isSuccessful()) {
                             Toast.makeText(getApplicationContext(), "Check your creds!",
                                     Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());
                             StatusManager.get(getApplicationContext()).setUser(FirebaseAuth.getInstance().getCurrentUser());
+                            StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
                             startActivity(new Intent(getApplicationContext(), BufferActivity.class));
+                            Log.i("i", "logging in");
                             finish();
                         }
                     }
                 });
+    }
+
+    private boolean isNetworkAvailableAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        boolean isNetworkAvailable = cm.getActiveNetworkInfo() != null;
+        boolean isNetworkConnected = isNetworkAvailable && cm.getActiveNetworkInfo().isConnected();
+        return isNetworkConnected;
     }
 }

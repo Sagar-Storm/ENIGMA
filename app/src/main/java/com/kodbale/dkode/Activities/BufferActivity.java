@@ -14,6 +14,7 @@ import com.kodbale.dkode.Database.StatusManager;
 import com.kodbale.dkode.Login.LoginActivity;
 import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
+import com.kodbale.dkode.Services.ContestRunner;
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -21,7 +22,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     Button btn;
     CountDownTimer countDownTimer;
     StatusManager mStatusManager;
-    private long waitTime = 5000;
+ //   private long waitTime = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,32 +34,53 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
         mStatusManager = StatusManager.get(getApplicationContext());
         FirebaseUser user = mStatusManager.getUser();
-
         if(user == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
             Log.i("i", "returning to login becz i suck");
             finish();
+        } else {
+            Log.i("i", "staying here only");
+            Log.i("i", user.getEmail());
         }
-
-//        countDownTimer = new CountDownTimer(waitTime,1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                finish();
-//            }
-//        }.start();
 
     }
 
     @Override
     public void onClick(View v) {
-            startActivity(new Intent(this, MainActivity.class));
+
+            Intent i = ContestRunner.newIntent(getApplicationContext());
+            //startService(i);
+             startActivity(new Intent(this, MainActivity.class));
             finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("a", "started");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("a", "stopped");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("a", "destoryed");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i("a", "paused");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("a", "resumed");
     }
 }
