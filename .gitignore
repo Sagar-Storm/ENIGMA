@@ -11,3 +11,5 @@ Thumbs.db
 .DS_Store
 .DS_Store?
 ._*
+app/app.iml
+build/android-profile/*
