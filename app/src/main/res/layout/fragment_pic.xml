@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kodbale.dkode.Fragments.PicFragment">
+    tools:context="com.kodbale.dkode.fragments.PicFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <ImageButton

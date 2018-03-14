@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import com.kodbale.dkode.Database.Question;
+import com.kodbale.dkode.database.Question;
 import java.util.ArrayList;
 
 /**

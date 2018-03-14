@@ -4,23 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    tools:context="com.kodbale.dkode.Login.LoginActivity">
+    android:background="@drawable/elogin"
+    tools:context="com.kodbale.dkode.login.LoginActivity">
 
     <LinearLayout
+        android:id="@+id/temp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/loginButton"
+        android:layout_marginBottom="100dp"
         android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true">
-
+        >
         <EditText
             android:id="@+id/group_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:hint="Group ID"
             android:inputType="text"
-            android:text="sagar@a.com" />
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/group_pass"
@@ -29,21 +31,26 @@
             android:layout_below="@id/group_id"
             android:hint="Passcode"
             android:inputType="textPassword"
-            android:text="sagarsagar" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/loginButton"
-        android:text="Let's Go"
-        android:layout_below="@id/group_pass"/>
+            android:textAlignment="center" />
 
     </LinearLayout>
-    <ProgressBar
+
+    <Button
+        android:id="@+id/loginButton"
+        style="@style/buttonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/loginProgress"
         android:layout_alignParentBottom="true"
+
+        android:text="Let's Go"
+       />
+
+    <ProgressBar
+        android:id="@+id/loginProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/loginButton"
         android:visibility="gone"
-        />
+        android:layout_marginBottom="30dp"
+         />
 </RelativeLayout>

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -23,16 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
-import com.kodbale.dkode.Activities.InfoActivity;
-import com.kodbale.dkode.Activities.Logout;
-import com.kodbale.dkode.Activities.ScoreActivity;
-import com.kodbale.dkode.Database.CurrentQuestion;
-import com.kodbale.dkode.Database.Question;
-import com.kodbale.dkode.Database.QuestionManager;
-import com.kodbale.dkode.Database.StatusManager;
-import com.kodbale.dkode.Fragments.PicFragment;
-import com.kodbale.dkode.Fragments.TextQuestion;
-import com.kodbale.dkode.Login.LoginActivity;
+import com.kodbale.dkode.activities.InfoActivity;
+import com.kodbale.dkode.activities.Logout;
+import com.kodbale.dkode.activities.ScoreActivity;
+import com.kodbale.dkode.database.CurrentQuestion;
+import com.kodbale.dkode.database.Question;
+import com.kodbale.dkode.database.QuestionManager;
+import com.kodbale.dkode.database.StatusManager;
+import com.kodbale.dkode.fragments.PicFragment;
+import com.kodbale.dkode.login.LoginActivity;
+
 
 import java.util.Locale;
 
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView timer;
     private CountDownTimer countDownTimer;
     private long countDownTime = MAX_TIME;
-    private TextQuestion textQuestion;
     private PicFragment imageQuestion;
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
@@ -113,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skip = (Button) findViewById(R.id.skip);
         frame = (FrameLayout) findViewById(R.id.frame);
         timer = (TextView) findViewById(R.id.timer);
-        textQuestion = new TextQuestion();
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
 
@@ -127,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+        //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         startCountDown();
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+            //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         }
 
     }
@@ -321,22 +318,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         } else {
             mStatusManager.setCurrentQuestion(question);
-            textQuestion.setQuestion(question);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
             countDownTime = MAX_TIME;
             countDownTimer.start();
         }
 
-        if (question.isIsText()) {
-            textQuestion.setQuestion(question);
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
-        }else if (question.isIsImage()){
-            /*
-            TODO: Add the image to the database
-             */
-
-            //imageQuestion.setImageQuestion();
-        }
         countDownTime = MAX_TIME;
         countDownTimer.start();
 

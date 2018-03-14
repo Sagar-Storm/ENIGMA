@@ -3,21 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kodbale.dkode.Activities.SplashActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/elogin"
+    tools:context="com.kodbale.dkode.activities.SplashActivity">
 
-    <TextView
-        android:layout_width="match_parent"
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/SplashScreen"
-        android:text="Enigma"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true"
         android:layout_centerInParent="true"
-        android:textAlignment="center"
-        />
-
-    <ProgressBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
-
+        app:lottie_autoPlay="true" />
 </RelativeLayout>

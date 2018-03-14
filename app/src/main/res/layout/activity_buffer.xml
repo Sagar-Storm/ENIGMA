@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_margin="@dimen/dopeMargin"
     android:layout_height="match_parent"
-    tools:context="com.kodbale.dkode.Activities.BufferActivity">
+    tools:context="com.kodbale.dkode.activities.BufferActivity">
 
     <Button
         android:layout_width="match_parent"
