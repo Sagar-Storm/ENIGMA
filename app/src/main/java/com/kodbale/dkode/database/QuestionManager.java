@@ -104,10 +104,10 @@ public class QuestionManager {
 
         if(savedUser == null || (!currentUser.equals(savedUser))) {
             mQuestionManager.deleteAllRows();
-            mQuestionManager.insertQuestion(new Question("That's it1?", "answer not revealed", 123,false,0, false, true));
-            mQuestionManager.insertQuestion(new Question("That's it2?", "answer not revealed", 124,false,0, false, true));
-            mQuestionManager.insertQuestion(new Question("That's it3?", "answer not revealed", 125,false,0, false, true));
-            mQuestionManager.insertQuestion(new Question("That's it4?", "answer not revealed", 126,false,0, false, true));
+            mQuestionManager.insertQuestion(new Question("That's it1?", "answer not revealed", 123,false,0));
+            mQuestionManager.insertQuestion(new Question("That's it2?", "answer not revealed", 124,false,0));
+            mQuestionManager.insertQuestion(new Question("That's it3?", "answer not revealed", 125,false,0));
+            mQuestionManager.insertQuestion(new Question("That's it4?", "answer not revealed", 126,false,0));
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putString("inserted_before", "1");
             editor.putString("current_user", currentUser);

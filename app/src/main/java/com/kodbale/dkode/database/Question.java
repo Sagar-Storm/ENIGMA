@@ -12,8 +12,6 @@ public class Question {
     private String mAnswerText;
     private boolean mIsAnswerd;
     private int mScore;
-    private boolean mIsImage;
-    private boolean mIsText;
     private int mNumberOfTries;
 
     public Question() {
@@ -22,8 +20,6 @@ public class Question {
         mQuestionId = -1;
         mIsAnswerd = false;
         mScore = 0;
-        mIsImage = false;
-        mIsText = true;
         mNumberOfTries = 0;
     }
 
@@ -46,21 +42,16 @@ public class Question {
         this.mQuestionId = q.mQuestionId;
         this.mIsAnswerd = q.mIsAnswerd;
         this.mScore = q.mScore;
-        this.mIsImage = q.mIsImage;
-        this.mIsText = q.mIsText;
     }
 
     public Question(String mQuestionText, String mAnswerText, int mQuestionId, boolean mIsAnswerd,
-        int  mScore, boolean mIsImage, boolean mIsText
+        int  mScore
     ) {
         this.mQuestionText = mQuestionText;
         this.mAnswerText  = mAnswerText;
         this.mQuestionId = mQuestionId;
         this.mIsAnswerd = mIsAnswerd;
         this.mScore = mScore;
-        this.mIsText = mIsText;
-        this.mIsImage = mIsImage;
-
     }
 
     public String getQuestionText() {
@@ -77,16 +68,6 @@ public class Question {
     public int getScore() {
         return mScore;
     }
-
-    public boolean isIsImage() {
-
-        return mIsImage;
-    }
-
-    public boolean isIsText() {
-        return mIsText;
-    }
-
     public int getQuestionId() {
         return mQuestionId;
     }
@@ -108,12 +89,6 @@ public class Question {
         this.mIsAnswerd = mIsAnswered;
     }
 
-    public void setIsImage(boolean mIsImage) {
-        this.mIsImage = mIsImage;
-    }
-    public void setIsText(boolean mIsText) {
-        this.mIsText = mIsText;
-    }
     public void setScore(int mScore) {
         this.mScore = mScore;
     }

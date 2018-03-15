@@ -119,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Asking for permissions
          */
         Context context = getApplicationContext();
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
+    /*    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
-        }
+        }*/
 
         //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
         startCountDown();
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mQuestionManager = QuestionManager.get(getApplicationContext());
         mStatusManager = StatusManager.get(getApplicationContext());
+
         mCurrentQuestion = mStatusManager.getCurrentQuestion();
 
         if (mStatusManager.getUser() == null){
@@ -153,7 +154,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
             finish();
         } else {
-            //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
+            PicFragment picFragment = new PicFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frame, picFragment).commit();
+
         }
 
     }
@@ -303,23 +306,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*
         The method that gets the next available question and updates the activity and starts timer
          */
-//        if(mQuestionManager.getQuestionsAnswered() == 5) {
-//            startActivity(new Intent(this, LoginActivity.class));
-//        }
         Question question = mQuestionManager.getNextQuestion();
 
         if(question == null) {
-//            StatusManager.get(getApplication()).getAuth().signOut();
-//            StatusManager.get(getApplication()).setAuth(null);
-//            StatusManager.get(getApplicationContext()).setUser(null);
+
             Intent intent = new Intent(this, Logout.class);
+
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             startActivity(intent);
+
             finish();
+
         } else {
+
             mStatusManager.setCurrentQuestion(question);
+
             countDownTime = MAX_TIME;
+
             countDownTimer.start();
+
         }
 
         countDownTime = MAX_TIME;
