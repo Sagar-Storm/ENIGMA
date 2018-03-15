@@ -25,9 +25,7 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btn:
                 finish();
                 break;
-            case R.id.leader:
-                Toast.makeText(getApplicationContext(),"Where's the leader board",Toast.LENGTH_SHORT).show();
-                break;
+
         }
     }
 }

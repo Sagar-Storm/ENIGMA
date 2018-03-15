@@ -10,9 +10,11 @@
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         android:layout_marginBottom="6dp"
-        android:id="@+id/tools"></android.support.v7.widget.Toolbar>
+        app:title="E.N.I.G.M.A"
+        app:titleTextColor="@color/white"
+        android:id="@+id/tools" />
 
     <TextView
         android:layout_width="match_parent"
@@ -21,11 +23,13 @@
         android:layout_below="@id/tools"
         android:id="@+id/timer"
         android:textAlignment="center"
+        style="@style/textStyle"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        style="@style/textStyle"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/timer">
     <LinearLayout
@@ -40,6 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Submit"
+            style="@style/buttonStyle"
             android:id="@+id/submit"
             />
         <Button
@@ -47,6 +52,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/skip"
             android:text="Skip"
+
+            style="@style/buttonStyle"
+
             android:layout_weight="1"
             />
     </LinearLayout>
@@ -54,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/dumm"
-        android:id="@+id/frame"></FrameLayout>
+        android:id="@+id/frame" />
     </RelativeLayout>
 
 </RelativeLayout>

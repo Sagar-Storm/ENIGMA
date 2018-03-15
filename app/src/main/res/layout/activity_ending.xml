@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/elogin"
     android:padding="32dp"
     tools:context="com.kodbale.dkode.activities.EndingActivity">
 
@@ -11,38 +12,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/buttonStyle"
-        android:layout_centerInParent="true"
+        android:layout_above="@id/scoreBtn"
+
         android:text="Exit!"
         android:id="@+id/btn"
-        android:layout_marginTop="26dp"
+        android:layout_marginBottom="30dp"
         />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/ByeBye"
+        style="@style/textStyle"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Game has ended mate!"
-         android:layout_above="@id/btn"
+        android:layout_above="@id/btn"
+        android:layout_marginBottom="30dp"
         android:textAlignment="center"/>
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scoreBtn"
-        android:layout_below="@id/btn"
-        android:layout_marginTop="26dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+
         android:text="See Scores"
         style="@style/buttonStyle"
         />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/buttonStyle"
-        android:text="Leader Board"
-        android:id="@+id/leader"
-        android:layout_marginTop="26dp"
-        android:layout_below="@id/scoreBtn"/>
+
 
 
 

@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,8 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
+import com.kodbale.dkode.activities.EndingActivity;
 import com.kodbale.dkode.activities.InfoActivity;
-import com.kodbale.dkode.activities.Logout;
 import com.kodbale.dkode.activities.ScoreActivity;
 import com.kodbale.dkode.database.CurrentQuestion;
 import com.kodbale.dkode.database.Question;
@@ -34,6 +33,8 @@ import com.kodbale.dkode.login.LoginActivity;
 
 
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(QuestionManager.get(getApplicationContext()).getNotAnsweredList().size() == 0) {
             Log.i("answered", "you have answered all before");
-            Intent intent = new Intent(this, Logout.class);
+            Intent intent = new Intent(this, EndingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
@@ -170,13 +171,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              startActivityForResult( i,REQUEST_CODE_QR_SCAN);
              break;
 
-         case R.id.skip:  //TODO get the next question and create a update the ui
-             mStatusManager.incrementQuestionSkipped();
-             mStatusManager.updateAnsweredStatusForCurrentQuestion();
-             mQuestionManager.updateAnsweredStatusInDb();
+         case R.id.skip:
 
-             setUpQuestion();
-             break;
+             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+             sweetAlertDialog.setTitleText("You really want to skip?")
+                     .setContentText("Won't be able to come back to this question!")
+                     .setConfirmText("Yes, just skip!")
+                     .setCancelText("No, I want to solve it!")
+                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                         @Override
+                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                             mStatusManager.incrementQuestionSkipped();
+                             mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                             mQuestionManager.updateAnsweredStatusInDb();
+                             setUpQuestion();
+                             sweetAlertDialog.dismiss();
+                         }
+                     })
+                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                         @Override
+                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                             sweetAlertDialog.dismiss();
+                         }
+                     })
+                     .show();
+
      }
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -191,16 +210,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String result = data.getStringExtra("com.blikoon.qrcodescanner.error_decoding_image");
             if( result!=null)
             {
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("Scan Error");
-                alertDialog.setMessage("QR Code could not be scanned");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Oops...")
+                        .setContentText("Couldn't get a good angle, take photo again!")
+                        .show();
+
             }
             return;
 
@@ -215,42 +229,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             solution = result;
 
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            alertDialog.setTitle("Scan Result");
+            SweetAlertDialog sweetAlertDialog  = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
 
             if(result.equals(solution)) {
-                alertDialog.setMessage("you successfully cracked the question");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialgo, int which) {
-                                countDownTimer.cancel();
-                                mStatusManager.updateScoreForCurrentQuestion();
-                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                                long questionUUID = getQuestionUUID();
-                                int currentQuestionScore = getCurrentQuestionScore();
-                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
-                                mQuestionManager.updateAnsweredStatusInDb();
-                                setUpQuestion();
+                sweetAlertDialog.setTitleText("Good job!")
+                        .setContentText("You Solved the problem!")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                sweetAlertDialog.setTitleText("Next Question!")
+                                        .setContentText("Proceed to next question!")
 
+                                        .setCustomImage(R.drawable.ic_navigate_next_black_24dp)
+                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                            @Override
+                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                                countDownTimer.cancel();
+                                                mStatusManager.updateScoreForCurrentQuestion();
+                                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                                                long questionUUID = getQuestionUUID();
+                                                int currentQuestionScore = getCurrentQuestionScore();
+                                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
+                                                mQuestionManager.updateAnsweredStatusInDb();
+                                                setUpQuestion();
+                                            }
+                                        })
+                                        .changeAlertType(SweetAlertDialog.CUSTOM_IMAGE_TYPE);
                             }
                         });
+
             } else {
-                alertDialog.setMessage("you failed to answer the question");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
+                sweetAlertDialog.setTitleText("Failed mate!")
+                        .setContentText("You scanned the wrong qr!")
+                        .setConfirmText("Retry")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 mStatusManager.incrementNoOfTries();
                                 mQuestionManager.updateNumberOfTries();
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                     mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();
+                                    sweetAlertDialog.dismiss();
                                 }
-                                dialog.dismiss();
                             }
-                        });
+                        })
+                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
             }
-            alertDialog.show();
+            sweetAlertDialog.show();
         }
     }
 
@@ -310,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(question == null) {
 
-            Intent intent = new Intent(this, Logout.class);
+            Intent intent = new Intent(this, EndingActivity.class);
 
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

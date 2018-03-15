@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/qno_display"
         tools:text="1."
+        style="@style/textStyle"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:layout_weight="2"
         />
@@ -21,10 +22,12 @@
         android:layout_height="wrap_content"
         tools:text="Dope Title"
         android:layout_weight="1"
+        style="@style/textStyle"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:id="@+id/qtitle_display"/>
     <TextView
         android:layout_width="match_parent"
+        style="@style/textStyle"
         android:layout_height="wrap_content"
         android:id="@+id/qscore_display"
         tools:text="100"
