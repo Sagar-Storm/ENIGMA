@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.login.LoginActivity;
@@ -20,9 +21,8 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
     TextView tv;
     Button btn;
-    CountDownTimer countDownTimer;
-    StatusManager mStatusManager;
- //   private long waitTime = 5000;
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,27 +31,29 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         tv = (TextView) findViewById(R.id.message);
         btn = (Button) findViewById(R.id.nextPageButton);
         btn.setOnClickListener(this);
+        mFirebaseAuth = mFirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
-        mStatusManager = StatusManager.get(getApplicationContext());
-        FirebaseUser user = mStatusManager.getUser();
-        if(user == null) {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        if(mFirebaseUser == null) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             Log.i("i", "returning to login becz i suck");
             finish();
+            return;
         } else {
             Log.i("i", "staying here only");
-            Log.i("i", user.getEmail());
+            Log.i("i", mFirebaseUser.getEmail());
         }
 
     }
 
     @Override
     public void onClick(View v) {
-
-
-            //startService(i);
-             startActivity(new Intent(this, MainActivity.class));
-            finish();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     @Override

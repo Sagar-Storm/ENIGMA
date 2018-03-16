@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,8 +22,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blikoon.qrcodescanner.QrCodeActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.kodbale.dkode.activities.EndingActivity;
 import com.kodbale.dkode.activities.InfoActivity;
+import com.kodbale.dkode.activities.EndingActivity;
 import com.kodbale.dkode.activities.ScoreActivity;
 import com.kodbale.dkode.database.CurrentQuestion;
 import com.kodbale.dkode.database.Question;
@@ -34,8 +37,6 @@ import com.kodbale.dkode.login.LoginActivity;
 
 import java.util.Locale;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final int REQUEST_CODE_QR_SCAN = 101;
@@ -46,8 +47,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button skip;
     private FrameLayout frame;
     private TextView timer;
-    private CountDownTimer countDownTimer;
-    private long countDownTime = MAX_TIME;
     private PicFragment imageQuestion;
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
@@ -126,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }*/
 
         //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
-        startCountDown();
+
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
@@ -135,11 +134,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mCurrentQuestion = mStatusManager.getCurrentQuestion();
 
-        if (mStatusManager.getUser() == null){
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
             mQuestionManager = null;
             mStatusManager = null;
             startActivity(new Intent(this, LoginActivity.class));
             Toast.makeText(getApplicationContext(), "You should login to continue", Toast.LENGTH_SHORT).show();
+            return ;
         }
 
         QuestionManager.get(getApplicationContext()).insertAllQuestions();
@@ -164,39 +164,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-     switch (v.getId()){
-         case R.id.submit:
-             submit.setEnabled(false);
-             Intent i = new Intent(MainActivity.this,QrCodeActivity.class);
-             startActivityForResult( i,REQUEST_CODE_QR_SCAN);
-             break;
+        switch (v.getId()){
+            case R.id.submit:
+                submit.setEnabled(false);
+                Intent i = new Intent(MainActivity.this,QrCodeActivity.class);
+                startActivityForResult( i,REQUEST_CODE_QR_SCAN);
+                break;
 
-         case R.id.skip:
+            case R.id.skip:  //TODO get the next question and create a update the ui
+                mStatusManager.incrementQuestionSkipped();
+                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                mQuestionManager.updateAnsweredStatusInDb();
 
-             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
-             sweetAlertDialog.setTitleText("You really want to skip?")
-                     .setContentText("Won't be able to come back to this question!")
-                     .setConfirmText("Yes, just skip!")
-                     .setCancelText("No, I want to solve it!")
-                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                         @Override
-                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                             mStatusManager.incrementQuestionSkipped();
-                             mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                             mQuestionManager.updateAnsweredStatusInDb();
-                             setUpQuestion();
-                             sweetAlertDialog.dismiss();
-                         }
-                     })
-                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                         @Override
-                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                             sweetAlertDialog.dismiss();
-                         }
-                     })
-                     .show();
-
-     }
+                setUpQuestion();
+                Toast.makeText(getApplicationContext(), "you are in the next question, no animation, fuck you rose kumar", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -210,11 +193,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String result = data.getStringExtra("com.blikoon.qrcodescanner.error_decoding_image");
             if( result!=null)
             {
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Couldn't get a good angle, take photo again!")
-                        .show();
-
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("Scan Error");
+                alertDialog.setMessage("QR Code could not be scanned");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
             return;
 
@@ -229,55 +217,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             solution = result;
 
-            SweetAlertDialog sweetAlertDialog  = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertDialog.setTitle("Scan Result");
 
             if(result.equals(solution)) {
-                sweetAlertDialog.setTitleText("Good job!")
-                        .setContentText("You Solved the problem!")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.setTitleText("Next Question!")
-                                        .setContentText("Proceed to next question!")
+                alertDialog.setMessage("you successfully cracked the question");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Next Question",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialgo, int which) {
+                                mStatusManager.updateScoreForCurrentQuestion();
+                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                                long questionUUID = getQuestionUUID();
+                                int currentQuestionScore = getCurrentQuestionScore();
+                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
+                                mQuestionManager.updateAnsweredStatusInDb();
+                                setUpQuestion();
 
-                                        .setCustomImage(R.drawable.ic_navigate_next_black_24dp)
-                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                countDownTimer.cancel();
-                                                mStatusManager.updateScoreForCurrentQuestion();
-                                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                                                long questionUUID = getQuestionUUID();
-                                                int currentQuestionScore = getCurrentQuestionScore();
-                                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
-                                                mQuestionManager.updateAnsweredStatusInDb();
-                                                setUpQuestion();
-                                            }
-                                        })
-                                        .changeAlertType(SweetAlertDialog.CUSTOM_IMAGE_TYPE);
                             }
                         });
-
             } else {
-                sweetAlertDialog.setTitleText("Failed mate!")
-                        .setContentText("You scanned the wrong qr!")
-                        .setConfirmText("Retry")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                alertDialog.setMessage("you failed to answer the question");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
                                 mStatusManager.incrementNoOfTries();
                                 mQuestionManager.updateNumberOfTries();
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                     mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();
-                                    sweetAlertDialog.dismiss();
                                 }
+                                dialog.dismiss();
                             }
-                        })
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        });
             }
-            sweetAlertDialog.show();
+            alertDialog.show();
         }
     }
 
@@ -294,35 +268,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    void startCountDown(){
-        countDownTimer = new CountDownTimer(countDownTime,1000) {
 
-            @Override
-            public void onTick(long millisUntilFinished) {
-
-                countDownTime = millisUntilFinished;
-                int mins = (int) (countDownTime/1000) / 60;
-                int secs = (int) (countDownTime/1000) % 60;
-                String timeToShow = String.format(Locale.getDefault(),"%02d:%02d",mins,secs);
-                timer.setText(timeToShow);
-                mStatusManager.setCurrentQuestionTimeRemaining((int)countDownTime/1000);
-
-            }
-
-            @Override
-            public void onFinish() {
-                //Get next question
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("Time up!");
-                alertDialog.setMessage("Oops times up");
-
-                mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                mQuestionManager.updateAnsweredStatusInDb();
-
-                setUpQuestion();
-            }
-        }.start();
-    }
 
     @Override
     public void onBackPressed() {
@@ -342,22 +288,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             startActivity(intent);
-
             finish();
+            return;
 
         } else {
 
             mStatusManager.setCurrentQuestion(question);
 
-            countDownTime = MAX_TIME;
-
-            countDownTimer.start();
-
         }
-
-        countDownTime = MAX_TIME;
-        countDownTimer.start();
-
     }
 
 

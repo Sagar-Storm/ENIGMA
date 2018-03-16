@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="com.pnikosis:materialish-progress-1.0">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/cf01a1e389285d518ea1c70ba19047d6/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/cf01a1e389285d518ea1c70ba19047d6/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/929b26b514e454ef52a4ffeab4999395/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/materialish-progress-1.0.aar/929b26b514e454ef52a4ffeab4999395/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

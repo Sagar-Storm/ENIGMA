@@ -27,7 +27,9 @@ public class FirebaseHelper {
 
     public void setFirebaseDatabase(FirebaseDatabase firebaseDatabase) {
         mFirebaseDatabase = firebaseDatabase;
-        mDatabaseReference = mFirebaseDatabase.getReference("userData/scores/" );
+        if(mFirebaseDatabase != null) {
+            mDatabaseReference = mFirebaseDatabase.getReference("userData/scores/");
+        }
     }
 
 

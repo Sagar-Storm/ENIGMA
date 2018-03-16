@@ -62,15 +62,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "Check your creds!",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());
-                            StatusManager.get(getApplicationContext()).setUser(FirebaseAuth.getInstance().getCurrentUser());
-                            StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
-                            startActivity(new Intent(getApplicationContext(), BufferActivity.class));
+                            makeLogin();
+                            Intent intent = new Intent(getApplicationContext(), BufferActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                             Log.i("i", "logging in");
                             finish();
                         }
                     }
                 });
+    }
+
+    public void makeLogin() {
+        StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());
+        StatusManager.get(getApplicationContext()).setUser(FirebaseAuth.getInstance().getCurrentUser());
+        StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
     }
 
     private boolean isNetworkAvailableAndConnected() {

@@ -9,15 +9,15 @@
     tools:context="com.kodbale.dkode.activities.EndingActivity">
 
     <Button
+        android:id="@+id/btn"
+        style="@style/buttonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/buttonStyle"
-        android:layout_above="@id/scoreBtn"
 
-        android:text="Exit!"
-        android:id="@+id/btn"
+        android:layout_above="@id/scoreBtn"
         android:layout_marginBottom="30dp"
-        />
+        android:onClick="onExitButtonClicked"
+        android:text="Exit!" />
 
     <TextView
         android:layout_width="match_parent"
@@ -31,15 +31,15 @@
         android:textAlignment="center"/>
 
     <Button
+        android:id="@+id/scoreBtn"
+        style="@style/buttonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scoreBtn"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
 
-        android:text="See Scores"
-        style="@style/buttonStyle"
-        />
+        android:layout_marginBottom="50dp"
+        android:onClick="onScoreButtonPressed"
+        android:text="See Scores" />
 
 
 

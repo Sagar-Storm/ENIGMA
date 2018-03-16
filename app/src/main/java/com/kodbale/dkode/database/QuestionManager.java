@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 /**
@@ -97,7 +99,7 @@ public class QuestionManager {
 
         boolean isInsertedBefore = mSharedPref.getString("inserted_before", "0").equals("0") ? false: true;
 
-        String currentUser = StatusManager.get(mAppContext).getUser().getEmail();
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
 
         String savedUser = mSharedPref.getString("current_user", null);
