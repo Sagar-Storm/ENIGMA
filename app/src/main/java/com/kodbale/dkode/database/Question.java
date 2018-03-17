@@ -12,7 +12,7 @@ public class Question {
     private String mAnswerText;
     private boolean mIsAnswerd;
     private int mScore;
-    private int mNumberOfTries;
+    private int mNumberOfTries = 1;
 
     public Question() {
         mQuestionText = "Dummy Text";
@@ -20,7 +20,7 @@ public class Question {
         mQuestionId = -1;
         mIsAnswerd = false;
         mScore = 0;
-        mNumberOfTries = 0;
+        mNumberOfTries = 1;
     }
 
 
@@ -71,7 +71,6 @@ public class Question {
     public int getQuestionId() {
         return mQuestionId;
     }
-
 
 
 

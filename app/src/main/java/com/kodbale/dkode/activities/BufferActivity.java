@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kodbale.dkode.database.QuestionManager;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.login.LoginActivity;
 import com.kodbale.dkode.MainActivity;
@@ -23,6 +24,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     Button btn;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
+    StatusManager mStatusManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +44,15 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             finish();
             return;
         } else {
+
             Log.i("i", "staying here only");
             Log.i("i", mFirebaseUser.getEmail());
+            QuestionManager.get(getApplicationContext()).insertAllQuestions();
+            Log.i("i", "inserted questions");
+            mStatusManager = StatusManager.get(getApplicationContext());
+            StatusManager.get(getApplicationContext()).initializeAnsweredList();
+         //   QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();
         }
-
     }
 
     @Override

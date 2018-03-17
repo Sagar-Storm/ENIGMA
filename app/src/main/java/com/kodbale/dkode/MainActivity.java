@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -41,19 +43,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int REQUEST_CODE_QR_SCAN = 101;
     private static final String LOGTAG = "QRSCAN";
-    private static final long MAX_TIME = 60000;
 
     private Button submit;
     private Button skip;
     private FrameLayout frame;
-    private TextView timer;
+    private TextView mTimerTextView;
     private PicFragment imageQuestion;
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
     private android.support.v7.widget.Toolbar toolbar;
     private int camRequestCode = 107;
-
+    private Handler handler;
+    public Thread mThread;
     private CurrentQuestion mCurrentQuestion;
+    public int timeRemaining = 300;
 
 
 
@@ -101,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,22 +115,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         submit = (Button) findViewById(R.id.submit);
         skip = (Button) findViewById(R.id.skip);
         frame = (FrameLayout) findViewById(R.id.frame);
-        timer = (TextView) findViewById(R.id.timer);
+        mTimerTextView = (TextView) findViewById(R.id.timer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
+        mTimerTextView.setText(""+timeRemaining);
 
-
-        /*
+    /*    *//*
         Asking for permissions
-         */
+         *//*
         Context context = getApplicationContext();
-    /*    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
+    *//*    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
-        }*/
+        }*//*
 
         //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
-
+*/
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
@@ -134,32 +139,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mCurrentQuestion = mStatusManager.getCurrentQuestion();
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
-            mQuestionManager = null;
-            mStatusManager = null;
-            startActivity(new Intent(this, LoginActivity.class));
-            Toast.makeText(getApplicationContext(), "You should login to continue", Toast.LENGTH_SHORT).show();
-            return ;
-        }
-
-        QuestionManager.get(getApplicationContext()).insertAllQuestions();
+       /* QuestionManager.get(getApplicationContext()).insertAllQuestions();
         Log.i("i", "inserted questions");
 
-        QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
-        QuestionManager.get(getApplicationContext()).initializeAnsweredList();
+        StatusManager.get(getApplicationContext()).initializeAnsweredList();
+        QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();*/
+        //QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
+        //QuestionManager.get(getApplicationContext()).initializeAnsweredList();
+
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                timeRemaining--;
+                    if (timeRemaining > 0) {
+                        if (handler != null) {
+                            handler.postDelayed(this, 1000);
+                            mTimerTextView.setText(timeRemaining + "");
+                        }
+                    } else {
+                        startend();
+                    }
+                }
+        };
+
+        handler = new Handler();
+        handler.postDelayed(runnable, 1000);
 
         if(QuestionManager.get(getApplicationContext()).getNotAnsweredList().size() == 0) {
             Log.i("answered", "you have answered all before");
             Intent intent = new Intent(this, EndingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            handler = null ;
             startActivity(intent);
             finish();
+
         } else {
+
             PicFragment picFragment = new PicFragment();
+
             getSupportFragmentManager().beginTransaction().replace(R.id.frame, picFragment).commit();
 
         }
 
+    }
+
+    public void startend() {
+        startActivity(new Intent(this, EndingActivity.class));
+        finish();
     }
 
     @Override
@@ -181,9 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         submit.setEnabled(true);
+
         if(resultCode != Activity.RESULT_OK)
         {
             Log.d(LOGTAG,"COULD NOT GET A GOOD RESULT.");
@@ -251,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         });
             }
+            alertDialog.setCancelable(false);
             alertDialog.show();
         }
     }
@@ -288,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             startActivity(intent);
+            handler = null;
             finish();
             return;
 

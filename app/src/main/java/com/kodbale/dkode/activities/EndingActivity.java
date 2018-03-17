@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kodbale.dkode.R;
+import com.kodbale.dkode.database.QuestionManager;
 import com.kodbale.dkode.database.StatusManager;
 
 public class EndingActivity extends AppCompatActivity implements View.OnClickListener{
@@ -50,6 +51,15 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
 
     public void onExitButtonClicked(View view) {
         FirebaseAuth.getInstance().signOut();
+        StatusManager.get(getApplicationContext()).setAllToNull();
+        QuestionManager.get(getApplicationContext()).setAllToNull();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FirebaseAuth.getInstance().signOut();
+
         finish();
     }
 }

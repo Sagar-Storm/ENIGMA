@@ -9,6 +9,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by sagar on 3/7/18.
  */
@@ -19,17 +22,17 @@ public class StatusManager {
     private FirebaseAuth mAuth = null;
     private FirebaseUser mUser = null;
     private FirebaseDatabase mFirebaseDatabase = null;
-
     private FirebaseHelper mFirebaseHelper = null;
-
-
-
     private CurrentQuestion mCurrentQuestion;
+    private int mTimeRemaining;
+    private ArrayList<Integer> mAnsweredListIds;
+
     int mTotalQuestionsShown = 0;
     int mQuestionAnswered  = 0;
     int mTotalScore = 0;
     int mQuestionSkipped = 0;
     int mQuestionTimedOut = 0;
+
     int mTotalQuestion = 0;
 
 
@@ -43,9 +46,18 @@ public class StatusManager {
         mAuth = null;
         mUser = null;
         if(mUser != null) Log.i("i", mUser.getEmail());
+        mAnsweredListIds = new ArrayList<>();
         mCurrentQuestion  = new CurrentQuestion(null, 300);
         mFirebaseDatabase = null;
         mFirebaseHelper = new FirebaseHelper();
+    }
+
+    public void setTimeRemaining(int timeRemaining) {
+        this.mTimeRemaining = timeRemaining ;
+    }
+
+    public int getTimeRemaining() {
+        return mTimeRemaining;
     }
 
     public static StatusManager get(Context c) {
@@ -56,13 +68,43 @@ public class StatusManager {
         return mStatusManager;
     }
 
+    public void setAllToNull() {
+        mAnsweredListIds = null;
+        mCurrentQuestion = null;
+        mStatusManager = null;
+    }
 
+    public void setAnsweredListIds(ArrayList<Integer> answeredListIds) {
+        this.mAnsweredListIds = answeredListIds;
+    }
+
+
+    public ArrayList<Integer> getAnsweredListIds() {
+        return mAnsweredListIds;
+    }
+
+    public void initializeAnsweredList() {
+        try {
+            mFirebaseHelper.fetchAnsweredList(mUser);
+        } catch(Exception e) {
+            System.out.println("error fetching favorite list" + e.getMessage());
+        }
+    }
 
     public void writeScoreToFirebase() {
+        try {
+            Question question = getQuestion();
+            int score = question.getScore();
+            int questionId = question.getQuestionId();
+            mFirebaseHelper.writeScore(mTotalScore, score, questionId, mUser);
+        } catch(Exception e) {
+
+        }
+    }
+
+    public void writeAnsweredListToFirebase() {
         Question question = getQuestion();
-        int score = question.getScore();
-        int questionId = question.getQuestionId();
-        mFirebaseHelper.writeScore(mTotalScore, score, questionId, mUser);
+        mFirebaseHelper.writeQuestionIdToAnsweredList(mAnsweredListIds, mUser);
     }
 
     public Question getQuestion() {
@@ -74,12 +116,11 @@ public class StatusManager {
         mCurrentQuestion.setCurrentQuestion(question);
     }
 
-    public void setCurrentQuestionTimeRemaining(int timeRemaining) {
-        mCurrentQuestion.setTimeRemaining(timeRemaining);
-    }
 
     public void updateScoreForCurrentQuestion() {
-        int score = mCurrentQuestion.getTimeRemaining() * 3;
+        int timeAnsweredAt = 300 - mTimeRemaining;
+        mCurrentQuestion.setTimeAnsweredAt(timeAnsweredAt);
+        int score = 250 / mCurrentQuestion.getQuestion().getNumberOfTries();
         mCurrentQuestion.getQuestion().setScore(score);
         updateTotalScore(score);
         writeScoreToFirebase();
@@ -87,6 +128,8 @@ public class StatusManager {
 
     public void updateAnsweredStatusForCurrentQuestion (){
         mCurrentQuestion.getQuestion().setIsAnswered(true);
+        mAnsweredListIds.add(getQuestion().getQuestionId());
+        writeAnsweredListToFirebase();
     }
 
     public void incrementNoOfTries() {
@@ -114,7 +157,7 @@ public class StatusManager {
             Log.i("databasef", "firebasedatabase is null");
         }
         mFirebaseDatabase = firebaseDatabase;
-        mFirebaseHelper.setFirebaseDatabase(mFirebaseDatabase);
+        mFirebaseHelper.setFirebaseDatabase(mFirebaseDatabase, mAppContext);
     }
 
     public void setAuth(FirebaseAuth auth)  {
