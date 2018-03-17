@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/elogin"
+    android:background="@drawable/enigma_buffer"
     android:padding="32dp"
     tools:context="com.kodbale.dkode.activities.EndingActivity">
 
@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         style="@style/buttonStyle"
         android:layout_above="@id/scoreBtn"
-
         android:text="Exit!"
         android:id="@+id/btn"
         android:layout_marginBottom="30dp"
@@ -24,10 +23,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/ByeBye"
         style="@style/textStyle"
+        android:textColor="@color/white"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Game has ended mate!"
-        android:layout_above="@id/btn"
-        android:layout_marginBottom="30dp"
+        android:layout_centerInParent="true"
         android:textAlignment="center"/>
 
     <Button
@@ -35,8 +34,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/scoreBtn"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-
+        android:layout_marginBottom="10dp"
         android:text="See Scores"
         style="@style/buttonStyle"
         />

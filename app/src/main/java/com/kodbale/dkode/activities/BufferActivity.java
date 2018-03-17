@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.google.firebase.auth.FirebaseUser;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.login.LoginActivity;
@@ -36,6 +37,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         FirebaseUser user = mStatusManager.getUser();
         if(user == null) {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
             Log.i("i", "returning to login becz i suck");
             finish();
         } else {
@@ -50,7 +52,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
 
             //startService(i);
-             startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
             finish();
     }
 

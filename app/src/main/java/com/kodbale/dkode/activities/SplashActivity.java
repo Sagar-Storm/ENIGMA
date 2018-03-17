@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {}
             @Override
             public void onFinish() {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashActivity.this, BufferActivity.class));
             }
         }.start();
     }

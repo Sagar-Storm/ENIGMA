@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/elogin"
+    android:background="@drawable/enigma_buffer"
     tools:context="com.kodbale.dkode.login.LoginActivity">
 
     <LinearLayout
@@ -12,17 +12,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/loginButton"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical"
         >
-
         <EditText
             android:id="@+id/group_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
+            android:textColor="@color/white"
             android:hint="Group ID"
             android:inputType="text"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:text="sagar@a.com"
             android:textAlignment="center" />
 
@@ -30,7 +31,9 @@
             android:id="@+id/group_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:layout_below="@id/group_id"
+            android:textColor="@color/white"
             android:hint="Passcode"
             android:inputType="textPassword"
             android:text="sagarsagar"

@@ -4,17 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/elogin"
+
+    android:background="@drawable/enigma_splash_screen"
     tools:context="com.kodbale.dkode.activities.SplashActivity">
 
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        app:lottie_fileName="loading.json"
-        app:lottie_loop="true"
-        android:layout_centerInParent="true"
-        app:lottie_autoPlay="true" />
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"/>
 </RelativeLayout>

@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     tools:context="com.kodbale.dkode.fragments.PicFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <ImageButton
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/setImageQ"
-        android:src="@mipmap/ic_launcher_round"
+        android:scaleType="fitXY"
+        android:src="@mipmap/ic_launcher"
         />
 
 </FrameLayout>

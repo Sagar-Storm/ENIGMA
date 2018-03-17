@@ -20,7 +20,11 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.blikoon.qrcodescanner.QrCodeActivity;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.github.javiersantos.materialstyleddialogs.enums.Style;
 import com.kodbale.dkode.activities.EndingActivity;
 import com.kodbale.dkode.activities.InfoActivity;
 import com.kodbale.dkode.activities.ScoreActivity;
@@ -31,15 +35,13 @@ import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.fragments.PicFragment;
 import com.kodbale.dkode.login.LoginActivity;
 
-
 import java.util.Locale;
-
-import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final int REQUEST_CODE_QR_SCAN = 101;
     private static final String LOGTAG = "QRSCAN";
+
     private static final long MAX_TIME = 60000;
 
     private Button submit;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu,menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -86,17 +89,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
             } else {
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("Permission Error");
-                alertDialog.setMessage("But I really need the permission to work?");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-
-                            }
-                        });
-                alertDialog.show();
+                new MaterialStyledDialog.Builder(this)
+                        .setTitle("Wrong Answer!")
+                        .setStyle(Style.HEADER_WITH_TITLE)
+                        .setDescription("But we really need the permission to continue, if you keep pressing no, it will run" +
+                                " into an infinite loop!")
+                        .show();
                 ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
             }
         }
@@ -138,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (mStatusManager.getUser() == null){
             mQuestionManager = null;
             mStatusManager = null;
-            startActivity(new Intent(this, LoginActivity.class));
+            //startActivity(new Intent(this, LoginActivity.class));
             Toast.makeText(getApplicationContext(), "You should login to continue", Toast.LENGTH_SHORT).show();
         }
 
@@ -173,25 +171,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
          case R.id.skip:
 
-             SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
-             sweetAlertDialog.setTitleText("You really want to skip?")
-                     .setContentText("Won't be able to come back to this question!")
-                     .setConfirmText("Yes, just skip!")
-                     .setCancelText("No, I want to solve it!")
-                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+             new MaterialStyledDialog.Builder(this)
+                     .setTitle("Oh no!")
+                     .setDescription("Are you sure you want to skip, you won't be able to come back to this question!!")
+                     .setPositiveText("I'm sure!")
+                     .setIcon(R.drawable.broken_heart)
+                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                          @Override
-                         public void onClick(SweetAlertDialog sweetAlertDialog) {
+                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                              mStatusManager.incrementQuestionSkipped();
                              mStatusManager.updateAnsweredStatusForCurrentQuestion();
                              mQuestionManager.updateAnsweredStatusInDb();
                              setUpQuestion();
-                             sweetAlertDialog.dismiss();
+                             dialog.dismiss();
                          }
                      })
-                     .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                     .setNegativeText("No no!")
+                     .onNegative(new MaterialDialog.SingleButtonCallback() {
                          @Override
-                         public void onClick(SweetAlertDialog sweetAlertDialog) {
-                             sweetAlertDialog.dismiss();
+                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                             dialog.dismiss();
                          }
                      })
                      .show();
@@ -210,9 +209,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String result = data.getStringExtra("com.blikoon.qrcodescanner.error_decoding_image");
             if( result!=null)
             {
-                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                        .setTitleText("Oops...")
-                        .setContentText("Couldn't get a good angle, take photo again!")
+                new MaterialStyledDialog.Builder(this)
+                        .setTitle("Oops...")
+                        .setDescription("Couldn't get a good angle, take photo again!")
                         .show();
 
             }
@@ -229,55 +228,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             solution = result;
 
-            SweetAlertDialog sweetAlertDialog  = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+
 
             if(result.equals(solution)) {
-                sweetAlertDialog.setTitleText("Good job!")
-                        .setContentText("You Solved the problem!")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                sweetAlertDialog.setTitleText("Next Question!")
-                                        .setContentText("Proceed to next question!")
 
-                                        .setCustomImage(R.drawable.ic_navigate_next_black_24dp)
-                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                                countDownTimer.cancel();
-                                                mStatusManager.updateScoreForCurrentQuestion();
-                                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                                                long questionUUID = getQuestionUUID();
-                                                int currentQuestionScore = getCurrentQuestionScore();
-                                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
-                                                mQuestionManager.updateAnsweredStatusInDb();
-                                                setUpQuestion();
-                                            }
-                                        })
-                                        .changeAlertType(SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+                new MaterialStyledDialog.Builder(this)
+                        .setTitle("Good job!")
+                        .setDescription("You solved the problem!")
+                        .setPositiveText("Okay!")
+                        .setIcon(R.drawable.celebration)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                countDownTimer.cancel();
+                                mStatusManager.updateScoreForCurrentQuestion();
+                                mStatusManager.updateAnsweredStatusForCurrentQuestion();
+                                long questionUUID = getQuestionUUID();
+                                int currentQuestionScore = getCurrentQuestionScore();
+                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
+                                mQuestionManager.updateAnsweredStatusInDb();
+                                setUpQuestion();
                             }
-                        });
+                        })
+                        .show();
 
             } else {
-                sweetAlertDialog.setTitleText("Failed mate!")
-                        .setContentText("You scanned the wrong qr!")
-                        .setConfirmText("Retry")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+
+                new MaterialStyledDialog.Builder(this)
+                        .setTitle("Failure!")
+                        .setDescription("Wront answer mate!")
+                        .setPositiveText("Retry!")
+                        .setIcon(R.drawable.thumb)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 mStatusManager.incrementNoOfTries();
                                 mQuestionManager.updateNumberOfTries();
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                     mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();
-                                    sweetAlertDialog.dismiss();
+                                    dialog.dismiss();
                                 }
                             }
                         })
-                        .changeAlertType(SweetAlertDialog.ERROR_TYPE);
+                        .show();
             }
-            sweetAlertDialog.show();
         }
     }
 
