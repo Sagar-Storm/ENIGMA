@@ -26,6 +26,7 @@ public class StatusManager {
     private CurrentQuestion mCurrentQuestion;
     private int mTimeRemaining;
     private ArrayList<Integer> mAnsweredListIds;
+    private Long mTimeStamp;
 
     int mTotalQuestionsShown = 0;
     int mQuestionAnswered  = 0;
@@ -43,13 +44,21 @@ public class StatusManager {
 
     private StatusManager(Context context) {
         mAppContext = context ;
-        mAuth = null;
-        mUser = null;
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         if(mUser != null) Log.i("i", mUser.getEmail());
         mAnsweredListIds = new ArrayList<>();
         mCurrentQuestion  = new CurrentQuestion(null, 300);
         mFirebaseDatabase = null;
         mFirebaseHelper = new FirebaseHelper();
+        mTimeStamp = null;
+    }
+
+
+    public void initializeGameLogin() {
+
+        mFirebaseHelper.getTimeStamp(mUser);
+
     }
 
     public void setTimeRemaining(int timeRemaining) {
@@ -68,6 +77,13 @@ public class StatusManager {
         return mStatusManager;
     }
 
+    public void setTimeStamp(Long timeStamp) {
+        mTimeStamp = timeStamp;
+        mFirebaseHelper.writeTimeStamp(mUser, mTimeStamp);
+    }
+    public Long getTimeStamp() {
+        return mTimeStamp ;
+    }
     public void setAllToNull() {
         mAnsweredListIds = null;
         mCurrentQuestion = null;

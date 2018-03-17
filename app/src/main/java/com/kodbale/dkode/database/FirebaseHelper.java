@@ -105,6 +105,45 @@ public class FirebaseHelper {
         });
     }
 
+
+    public void writeTimeStamp(FirebaseUser user, Long timeStamp) {
+        String _emailId = user.getEmail().split("@")[0];
+        try {
+            mDatabaseReference.child(user.getUid()).child(_emailId).child("logged_in_at").setValue(timeStamp);
+        } catch(Exception e) {
+            Log.i("answer storing error", "exception in firebase");
+        }
+    }
+
+    public void getTimeStamp(FirebaseUser user) {
+        String emailId = getEmailStripped(user.getEmail());
+        System.out.println("timestamp" + emailId);
+            DatabaseReference databaseReference = mDatabaseReference.child(user.getUid()).child(emailId).child("logged_in_at");
+
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Object o = dataSnapshot.getValue();
+                    if (dataSnapshot.getValue() == null) {
+                        System.out.println("set mate null");
+
+                        StatusManager.get(mAppContext).setTimeStamp(null);
+                    } else {
+                        GenericTypeIndicator<Long> t = new GenericTypeIndicator<Long>(){} ;
+                        System.out.println("set mate");
+                        StatusManager.get(mAppContext).setTimeStamp(dataSnapshot.getValue(t));
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });
+
+    }
+
     class ScoreObject {
 
         public int score;

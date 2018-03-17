@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Handler handler;
     public Thread mThread;
     private CurrentQuestion mCurrentQuestion;
-    public int timeRemaining = 300;
+    public long timeRemaining = 100;
 
 
 
@@ -118,7 +118,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTimerTextView = (TextView) findViewById(R.id.timer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
-        mTimerTextView.setText(""+timeRemaining);
+        if(getIntent().getExtras() != null) {
+
+            Long timeExtra = getIntent().getExtras().getLong("TIME_REMAINING");
+
+            if (timeExtra != null) {
+                String timeExtraString = Long.toString(timeExtra);
+                timeRemaining = timeExtra;
+            }
+        }
+        mTimerTextView.setText(timeRemaining+"");
 
     /*    *//*
         Asking for permissions
@@ -204,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mQuestionManager.updateAnsweredStatusInDb();
 
                 setUpQuestion();
-                Toast.makeText(getApplicationContext(), "you are in the next question, no animation, fuck you rose kumar", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "you are in the next question, no animation", Toast.LENGTH_LONG).show();
                 break;
         }
     }
