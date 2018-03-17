@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
 
     android:layout_height="match_parent"
-    android:background="@drawable/enigma_buffer"
+    android:background="@drawable/wallpaper"
     tools:context="com.kodbale.dkode.activities.BufferActivity">
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/nextPageButton"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
         style="@style/buttonStyle"
-
         android:textColor="@color/white"
+        android:layout_marginBottom="150dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_margin="10dp"
         android:text="Start the Game"/>
 
     <TextView
@@ -25,9 +25,9 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         style="@style/textStyle"
+        android:textStyle="bold"
         android:text="Welcome to Enigma"
         android:id="@+id/message"
-        android:textColor="@color/white"
         android:layout_marginBottom="30dp"
         android:layout_above="@id/nextPageButton"/>
 

@@ -4,26 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/enigma_buffer"
+    android:background="@drawable/wallpaper"
     tools:context="com.kodbale.dkode.login.LoginActivity">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/Welcome"
+        android:layout_above="@id/temp"
+        android:textAlignment="center"
+        android:layout_margin="15dp"
+        android:fontFamily="serif-monospace"
+        android:textStyle="bold"
+        android:text="E.N.I.G.M.A - L.O.G.I.N"/>
 
     <LinearLayout
         android:id="@+id/temp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_above="@id/loginButton"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="70dp"
         android:orientation="vertical"
         >
         <EditText
             android:id="@+id/group_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:textColor="@color/white"
+            android:layout_marginBottom="30dp"
             android:hint="Group ID"
             android:inputType="text"
-            android:backgroundTint="@color/colorPrimaryDark"
             android:text="sagar@a.com"
             android:textAlignment="center" />
 
@@ -31,9 +43,8 @@
             android:id="@+id/group_pass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimaryDark"
+
             android:layout_below="@id/group_id"
-            android:textColor="@color/white"
             android:hint="Passcode"
             android:inputType="textPassword"
             android:text="sagarsagar"

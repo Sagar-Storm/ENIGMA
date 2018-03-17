@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
              new MaterialStyledDialog.Builder(this)
                      .setTitle("Oh no!")
+                     .withDivider(true)
                      .setDescription("Are you sure you want to skip, you won't be able to come back to this question!!")
                      .setPositiveText("I'm sure!")
                      .setIcon(R.drawable.broken_heart)
@@ -183,7 +184,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                              mStatusManager.updateAnsweredStatusForCurrentQuestion();
                              mQuestionManager.updateAnsweredStatusInDb();
                              setUpQuestion();
+
                              dialog.dismiss();
+                             Toast.makeText(getApplicationContext(),"Dope",Toast.LENGTH_SHORT).show();
                          }
                      })
                      .setNegativeText("No no!")
