@@ -15,6 +15,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 }
 
@@ -24,11 +25,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
-    compile 'com.google.firebase:firebase-database:11.8.0'
-    compile 'com.github.blikoon:QRCodeScanner:0.1.2'
-    compile 'com.github.javiersantos:MaterialStyledDialogs:2.1'
-
+    implementation 'com.google.firebase:firebase-auth:11.8.0'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
+    implementation 'com.github.blikoon:QRCodeScanner:0.1.2'
+    implementation 'com.github.javiersantos:MaterialStyledDialogs:2.1'
     testCompile 'junit:junit:4.12'
 }
 
