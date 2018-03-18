@@ -128,10 +128,12 @@ public class FirebaseHelper {
                         System.out.println("set mate null");
 
                         StatusManager.get(mAppContext).setTimeStamp(null);
+                        StatusManager.get(mAppContext).allSet = 0;
                     } else {
                         GenericTypeIndicator<Long> t = new GenericTypeIndicator<Long>(){} ;
                         System.out.println("set mate");
                         StatusManager.get(mAppContext).setTimeStamp(dataSnapshot.getValue(t));
+                        StatusManager.get(mAppContext).allSet = 1;
                     }
 
                 }

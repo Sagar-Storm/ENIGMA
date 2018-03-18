@@ -2,12 +2,14 @@ package com.kodbale.dkode.activities;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
@@ -30,6 +32,10 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
     StatusManager mStatusManager;
+    private ProgressBar progressBar;
+    public Handler handler ;
+
+    public int processing = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +44,12 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         tv = (TextView) findViewById(R.id.message);
         btn = (Button) findViewById(R.id.nextPageButton);
         btn.setOnClickListener(this);
+        progressBar = (ProgressBar) findViewById(R.id.loadingDataProgressBar);
         mFirebaseAuth = mFirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
+        btn.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         if(mFirebaseUser == null) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -49,7 +58,8 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             Log.i("i", "returning to login becz i suck");
             finish();
             return;
-        } else {
+        }
+
             StatusManager.get(getApplicationContext()).setAuth(mFirebaseAuth);
             StatusManager.get(getApplicationContext()).setUser(mFirebaseUser);
             Log.i("i", "staying here only");
@@ -57,23 +67,57 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             QuestionManager.get(getApplicationContext()).insertAllQuestions();
             Log.i("i", "inserted questions");
             mStatusManager = StatusManager.get(getApplicationContext());
-            StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
-            StatusManager.get(getApplicationContext()).initializeAnsweredList();
-            StatusManager.get(getApplicationContext()).initializeGameLogin();
+
+
+            handler = new Handler();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if(processing == 0) {
+                        StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
+                        StatusManager.get(getApplicationContext()).initializeAnsweredList();
+                        StatusManager.get(getApplicationContext()).initializeGameLogin();
+                        processing = 1;
+                    }
+
+                    if(StatusManager.get(getApplicationContext()).allSet != -1) {
+                            allSet();
+                    } else {
+                        handler.postDelayed(this, 100);
+                    }
+
+                }
+            };
+
+            handler.postDelayed(runnable, 0);
+
+
          //   QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();
-        }
+
+    }
+
+    public void allSet() {
+
+        btn.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+        handler = null;
+        processing = 0;
+
     }
 
     @Override
     public void onClick(View v) {
+
+        handler = null ;
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
 
         if(mStatusManager.getTimeStamp() == null) {
             long unixTime = System.currentTimeMillis() / 1000L;
             System.out.println("the time is" + unixTime);
             mStatusManager.setTimeStamp(unixTime);
+            mStatusManager.writeTimeStampToFirebase(unixTime);
         } else {
             long currentUnixTime = System.currentTimeMillis()/1000L;
             long loggedInUnixtime = mStatusManager.getTimeStamp();
@@ -81,7 +125,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             if(currentTimeRemaining <= 0 ) {
                  intent = new Intent(this, EndingActivity.class);
                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
+                 Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
                  startActivity(intent);
                  finish();
                  return;
@@ -91,7 +135,6 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         }
         startActivity(intent);
         finish();
-
     }
 
     @Override
