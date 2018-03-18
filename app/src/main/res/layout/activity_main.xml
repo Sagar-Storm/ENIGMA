@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/skip"
             android:text="Skip"
-
+            android:layout_marginLeft="2dp"
             style="@style/buttonStyle"
 
             android:layout_weight="1"
