@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blikoon.qrcodescanner.QrCodeActivity;
@@ -290,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                countDownTimer.cancel();
+
                                 mStatusManager.updateScoreForCurrentQuestion();
                                 mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                 long questionUUID = getQuestionUUID();
@@ -327,10 +326,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .show();
             }
 
-                        });
+
             }
         }
-    }
+
 
 
     public int getQuestionUUID() {

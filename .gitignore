@@ -13,3 +13,4 @@ Thumbs.db
 ._*
 app/app.iml
 build/android-profile/*
+.idea/libraries/*
