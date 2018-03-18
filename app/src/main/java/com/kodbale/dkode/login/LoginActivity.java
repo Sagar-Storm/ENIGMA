@@ -1,5 +1,6 @@
 package com.kodbale.dkode.login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Handler;
@@ -41,26 +42,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         groupId = (EditText) findViewById(R.id.group_id);
         groupPass = (EditText) findViewById(R.id.group_pass);
         btn = (Button) findViewById(R.id.loginButton);
-        progressBar = (ProgressBar) findViewById(R.id.loginProgress);
+        progressBar = (ProgressBar) findViewById(R.id.progress);
         btn.setOnClickListener(this);
 
     }
     
     @Override
     public void onClick(View v) {
+        btn.setEnabled(false);
         email = groupId.getText().toString();
         password = groupPass.getText().toString();
         progressBar.setVisibility(View.VISIBLE);
-        if ( email.isEmpty() || password.isEmpty()) {
-            progressBar.setVisibility(View.INVISIBLE);
-            Toast.makeText(getApplicationContext(),"Fill this thing up!",Toast.LENGTH_SHORT).show();
+        if ( email.isEmpty() ) {
+            groupId.setError("Email can't be empty");
+            return;
+        }
+        if (password.isEmpty()){
+            groupPass.setError("Password cant be empty");
             return;
         }
         if(!isNetworkAvailableAndConnected()) {
             progressBar.setVisibility(View.INVISIBLE);
-            Toast.makeText(getApplicationContext(),"top up first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Network not available",Toast.LENGTH_SHORT).show();
             return ;
         }
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -77,13 +83,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startActivity(intent);
                             Log.i("i", "logging in");
                             progressBar.setVisibility(View.INVISIBLE);
-
-                            finish();
+                            finishActivity(900);
 
                         }
                     }
                 });
     }
+
 
     public void makeLogin() {
         StatusManager.get(getApplicationContext()).setAuth(FirebaseAuth.getInstance());

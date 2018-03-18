@@ -4,10 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper"
+    android:background="@color/colorPrimary"
     android:padding="32dp"
     tools:context="com.kodbale.dkode.activities.EndingActivity">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:src="@drawable/enigma_logo"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"/>
     <Button
         android:id="@+id/btn"
         style="@style/buttonStyle"
@@ -24,9 +30,10 @@
         android:id="@+id/ByeBye"
         style="@style/textStyle"
         android:textStyle="bold"
+        android:layout_centerInParent="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
         android:text="Game has ended mate!"
-       android:layout_above="@id/btn"
+        android:textColor="@color/white"
         android:layout_marginBottom="30dp"
         android:textAlignment="center"/>
 

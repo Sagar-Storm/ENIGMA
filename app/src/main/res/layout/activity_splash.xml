@@ -4,22 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    android:background="@drawable/wallpaper"
+    android:padding="20dp"
+    android:background="@color/colorPrimary"
     tools:context="com.kodbale.dkode.activities.SplashActivity">
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:fontFamily="serif-monospace"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:textSize="30sp"
-        android:text="E.N.I.G.M.A"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:src="@drawable/impetus_logo"
+        android:layout_marginTop="100dp"
+        android:contentDescription="Impetus Logo"
+        android:layout_gravity="center_horizontal"/>
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="240dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="Enigma Logo"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/enigma_logo"
+        android:layout_marginBottom="24dp"
+        android:layout_centerInParent="true"/>
+
 
 
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
