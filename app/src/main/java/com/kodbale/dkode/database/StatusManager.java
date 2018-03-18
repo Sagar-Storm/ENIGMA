@@ -27,6 +27,9 @@ public class StatusManager {
     private int mTimeRemaining;
     private ArrayList<Integer> mAnsweredListIds;
     private Long mTimeStamp;
+    public int allSet = -1;
+
+
 
     int mTotalQuestionsShown = 0;
     int mQuestionAnswered  = 0;
@@ -79,11 +82,16 @@ public class StatusManager {
 
     public void setTimeStamp(Long timeStamp) {
         mTimeStamp = timeStamp;
-        mFirebaseHelper.writeTimeStamp(mUser, mTimeStamp);
     }
+
+    public void writeTimeStampToFirebase(Long timestamp) {
+        mFirebaseHelper.writeTimeStamp(mUser, timestamp);
+    }
+
     public Long getTimeStamp() {
         return mTimeStamp ;
     }
+
     public void setAllToNull() {
         mAnsweredListIds = null;
         mCurrentQuestion = null;

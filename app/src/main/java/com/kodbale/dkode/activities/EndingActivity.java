@@ -32,8 +32,6 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
 
         scoreBtn = (Button) findViewById(R.id.scoreBtn);
         exitBtn = (Button) findViewById(R.id.btn);
-        scoreBtn.setOnClickListener(this);
-        exitBtn.setOnClickListener(this);
         mFirebaseAuth  = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mAuthListener = new FirebaseAuth.AuthStateListener(){
