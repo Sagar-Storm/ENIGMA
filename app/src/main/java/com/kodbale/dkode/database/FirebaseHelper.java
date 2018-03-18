@@ -51,11 +51,10 @@ public class FirebaseHelper {
         Log.i("questoinID", Integer.toString(questionID));
         String _emailId = user.getEmail().split("@")[0];
         try {
-            mDatabaseReference.child(user.getUid() + "/emailId").setValue(user.getEmail());
-            mDatabaseReference.child(user.getUid()).push().setValue(new ScoreObject(questionID, score));
+            mDatabaseReference.child(user.getUid()).child(_emailId).child("score_details").push().setValue(new ScoreObject(questionID, score));
             Map<String, Integer> finalScoreMap = new HashMap<>();
             finalScoreMap.put("finalScore", finalScore);
-            mDatabaseReference.child(user.getUid() + "/finalScore").setValue(finalScoreMap);
+            mDatabaseReference.child(user.getUid()).child(_emailId).child("final_score").setValue(finalScoreMap);
         } catch(Exception e) {
             Log.i("problem with firebase", "pjiooijo");
         }

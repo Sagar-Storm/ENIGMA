@@ -118,6 +118,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             System.out.println("the time is" + unixTime);
             mStatusManager.setTimeStamp(unixTime);
             mStatusManager.writeTimeStampToFirebase(unixTime);
+
         } else {
             long currentUnixTime = System.currentTimeMillis()/1000L;
             long loggedInUnixtime = mStatusManager.getTimeStamp();

@@ -118,9 +118,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
         if(getIntent().getExtras() != null) {
-
             Long timeExtra = getIntent().getExtras().getLong("TIME_REMAINING");
-
+            Toast.makeText(this, "extra was there", Toast.LENGTH_SHORT).show();
             if (timeExtra != null) {
                 String timeExtraString = Long.toString(timeExtra);
                 timeRemaining = timeExtra;
@@ -178,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         handler.postDelayed(runnable, 1000);
 
         if(QuestionManager.get(getApplicationContext()).getNotAnsweredList().size() == 0) {
-            Log.i("answered", "you have answered all before");
+            Toast.makeText(this,"You have finished all questions", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, EndingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             handler = null ;
@@ -196,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void startend() {
+        Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, EndingActivity.class));
         finish();
     }
@@ -221,11 +221,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                      .onPositive(new MaterialDialog.SingleButtonCallback() {
                          @Override
                          public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                             mStatusManager.incrementQuestionSkipped();
-                             mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                             mQuestionManager.updateAnsweredStatusInDb();
-                             setUpQuestion();
 
+                             mStatusManager.updateAnsweredStatusForCurrentQuestion();
+
+                             mQuestionManager.updateAnsweredStatusInDb();
+
+                             setUpQuestion();
                              dialog.dismiss();
                              Toast.makeText(getApplicationContext(),"Dope",Toast.LENGTH_SHORT).show();
                          }
@@ -306,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Failure!")
-                        .setDescription("Wront answer mate!")
+                        .setDescription("Wrong answer mate!")
                         .setPositiveText("Retry!")
                         .setIcon(R.drawable.thumb)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
