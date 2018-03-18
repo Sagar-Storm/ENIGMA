@@ -24,5 +24,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class
+-keepattributes Signature
+-keepattributes *Annotation*
 cn.pedant.SweetAlert.Rotate3dAnimation
 { public <init>(...); }

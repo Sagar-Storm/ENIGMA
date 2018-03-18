@@ -1,8 +1,13 @@
 <component name="libraryTable">
   <library name="com.github.blikoon:QRCodeScanner-0.1.2">
     <CLASSES>
+<<<<<<< HEAD
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/QRCodeScanner-0.1.2.aar/c16681a58f4ea1a5a11faad86ba2c05a/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/QRCodeScanner-0.1.2.aar/c16681a58f4ea1a5a11faad86ba2c05a/jars/classes.jar!/" />
+=======
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/QRCodeScanner-0.1.2.aar/21753cf355c83f8bb240304cde02b836/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/QRCodeScanner-0.1.2.aar/21753cf355c83f8bb240304cde02b836/jars/classes.jar!/" />
+>>>>>>> branch2
     </CLASSES>
     <JAVADOC />
     <SOURCES />

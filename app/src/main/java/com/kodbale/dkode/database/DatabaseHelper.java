@@ -18,16 +18,24 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String DB_NAME = "dkode.sqlite";
-    public static final int VERSION = 1;
-    private static final String TABLE_QUESTIONS = "questions";
-    private static final String COLUMN_QUESTION_NO = "question_no";
-    private static final String COLUMN_QUESTION_UUID = "question_uuid";
-    private static final String COLUMN_QUESTION_TEXT = "question_text";
-    private static final String COLUMN_ANSWER_TEXT = "answer_text";
-    private static final String COLUMN_IS_ANSWERED = "is_answered";
-    private static final String COLUMN_SCORE = "score";
-    private static final String COLUMN_NUMBER_OF_TRIES = "number_of_tries";
 
+    public static final int VERSION = 1;
+
+    private static final String TABLE_QUESTIONS = "questions";
+
+    private static final String COLUMN_QUESTION_NO = "question_no";
+
+    private static final String COLUMN_QUESTION_UUID = "question_uuid";
+
+    private static final String COLUMN_QUESTION_TEXT = "question_text";
+
+    private static final String COLUMN_ANSWER_TEXT = "answer_text";
+
+    private static final String COLUMN_IS_ANSWERED = "is_answered";
+
+    private static final String COLUMN_SCORE = "score";
+
+    private static final String COLUMN_NUMBER_OF_TRIES = "number_of_tries";
 
 
     public DatabaseHelper(Context context) {
@@ -62,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         cv.put(COLUMN_QUESTION_UUID, question.getQuestionId());
         cv.put(COLUMN_IS_ANSWERED, isTrue(question.isIsAnswerd()));
         cv.put(COLUMN_SCORE, question.getScore());
-        cv.put(COLUMN_NUMBER_OF_TRIES, 0);
+        cv.put(COLUMN_NUMBER_OF_TRIES, 1);
         Log.i("inserted", "inserted mate");
         return getReadableDatabase().insert(TABLE_QUESTIONS, null, cv);
     }
@@ -136,8 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 
         public Question getQuestion() {
-
-           int questionId = getInt(getColumnIndex((COLUMN_QUESTION_UUID)));
+            int questionId = getInt(getColumnIndex((COLUMN_QUESTION_UUID)));
             String questionText = getString(getColumnIndex(COLUMN_QUESTION_TEXT));
             String answerText = getString(getColumnIndex((COLUMN_ANSWER_TEXT)));
             boolean isAnswered = (getInt(getColumnIndex(COLUMN_IS_ANSWERED)) != 0) ? true: false;

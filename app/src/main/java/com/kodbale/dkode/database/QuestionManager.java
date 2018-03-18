@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 
 /**
@@ -81,13 +83,15 @@ public class QuestionManager {
     public ArrayList<Question> getAllQuestions() {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryQuestions();
         ArrayList<Question> questionsList = new ArrayList<>();
-        if(mQuestionCursor.getCount() > 0) {
-            for(int i = 0; i < mQuestionCursor.getCount(); i++) {
-                Question question = mQuestionCursor.getQuestion();
-                questionsList.add(question);
-            }
+        if(mQuestionCursor.getCount() != 0) {
+            mQuestionCursor.moveToFirst();
+                while (!mQuestionCursor.isAfterLast()) {
+                    Question dishItem = mQuestionCursor.getQuestion();
+                    questionsList.add(dishItem);
+                    mQuestionCursor.moveToNext();
+                }
+            mQuestionCursor.close();
         }
-        mQuestionCursor.close();
         return questionsList;
     }
 
@@ -97,7 +101,7 @@ public class QuestionManager {
 
         boolean isInsertedBefore = mSharedPref.getString("inserted_before", "0").equals("0") ? false: true;
 
-        String currentUser = StatusManager.get(mAppContext).getUser().getEmail();
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
 
         String savedUser = mSharedPref.getString("current_user", null);
@@ -120,6 +124,53 @@ public class QuestionManager {
 
     }
 
+
+    public  void initializeFromFirebaseList() {
+
+        ArrayList<Question> questionsList = getAllQuestions();
+        ArrayList<Integer> questionIds = new ArrayList<>() ;
+        for(int i = 0; i < questionsList.size(); i++) {
+            questionIds.add(questionsList.get(i).getQuestionId());
+        }
+
+        ArrayList<Integer> answeredListIds = StatusManager.get(mAppContext).getAnsweredListIds();
+        mNotAnsweredList = questionsList;
+
+        System.out.println( "sizeof answerded after fetch" + answeredListIds.size());
+        System.out.println("Size of answered list " + mAnsweredList.size());
+
+
+        for(int i = 0; i < answeredListIds.size(); i++) {
+            if(questionIds.contains(answeredListIds.get(i))) {
+                int indexOfQuestion = getQuestionById(questionsList, answeredListIds.get(i));
+                if(indexOfQuestion != -1) {
+                    mAnsweredList.add(questionsList.get(indexOfQuestion));
+                    mNotAnsweredList.remove(questionsList.get(indexOfQuestion));
+                }
+            }
+        }
+        System.out.println("size of not answered " + mNotAnsweredList.size());
+        System.out.println("Size of answered list " + mAnsweredList.size());
+        System.out.println("sizeof notanswerded" + mNotAnsweredList.size());
+    }
+
+    public int getQuestionById(ArrayList<Question> questionList, int questionId) {
+        System.out.println("called with" + questionId);
+        for(int i = 0; i < questionList.size(); i++) {
+            if(questionList.get(i).getQuestionId() == questionId) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void setAllToNull() {
+        mAnsweredList = null;
+        mNotAnsweredList = null;
+        mQuestionManager = null;
+    }
+
+
     public void initializeNotAnsweredList() {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryNotAnswered();
         Log.i("d", "size of not answered list" + mQuestionCursor.getCount());
@@ -134,6 +185,8 @@ public class QuestionManager {
         }
         mQuestionCursor.close();
     }
+
+
 
     public void initializeAnsweredList() {
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryAnswered();
