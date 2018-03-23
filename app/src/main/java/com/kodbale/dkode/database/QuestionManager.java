@@ -125,15 +125,15 @@ public class QuestionManager {
             mQuestionManager.insertQuestion(new Question("Question4", "answer4", 4,false,0,"R.drawable.four"));
             mQuestionManager.insertQuestion(new Question("Question5", "answer5", 5,false,0,"R.drawable.five"));
             mQuestionManager.insertQuestion(new Question("Question6", "answer6", 6,false,0,"R.drawable.six"));
-            mQuestionManager.insertQuestion(new Question("Question7", "answer6", 7, false,0,"R.drawable.seven"));
-            mQuestionManager.insertQuestion(new Question("Question8", "answer7", 8,false,0, "R.drawable.eight"));
-            mQuestionManager.insertQuestion(new Question("Question9", "answer8", 9,false,0,"R.drawable.nine"));
-            mQuestionManager.insertQuestion(new Question("Question10", "answer9", 10,false,0,"R.drawable.ten"));
-            mQuestionManager.insertQuestion(new Question("Question11", "answer10", 11,false,0,"R.drawable.eleven"));
-            mQuestionManager.insertQuestion(new Question("Question12", "answer11", 11, false,0,"R.drawable.twelve"));
-            mQuestionManager.insertQuestion(new Question("Question13", "answer12", 12,false,0, "R.drawable.thirteen"));
-            mQuestionManager.insertQuestion(new Question("Question14", "asnwer13", 13,false,0,"R.drawable.fourteen"));
-            mQuestionManager.insertQuestion(new Question("Question15", "answer14", 14,false,0,"R.drawable.fifteen"));
+            mQuestionManager.insertQuestion(new Question("Question7", "answer7", 7, false,0,"R.drawable.seven"));
+            mQuestionManager.insertQuestion(new Question("Question8", "answer8", 8,false,0, "R.drawable.eight"));
+            mQuestionManager.insertQuestion(new Question("Question9", "answer9", 9,false,0,"R.drawable.nine"));
+            mQuestionManager.insertQuestion(new Question("Question10", "answer10", 10,false,0,"R.drawable.ten"));
+            mQuestionManager.insertQuestion(new Question("Question11", "answer11", 11,false,0,"R.drawable.eleven"));
+            mQuestionManager.insertQuestion(new Question("Question12", "answer12", 12, false,0,"R.drawable.twelve"));
+            mQuestionManager.insertQuestion(new Question("Question13", "answer13", 13,false,0, "R.drawable.thirteen"));
+            mQuestionManager.insertQuestion(new Question("Question14", "asnwer14", 14,false,0,"R.drawable.fourteen"));
+            mQuestionManager.insertQuestion(new Question("Question15", "answer15", 15,false,0,"R.drawable.fifteen"));
 
 
             SharedPreferences.Editor editor = mSharedPref.edit();
@@ -276,7 +276,7 @@ public class QuestionManager {
                 if(question.getNumberOfTries() >= 3) {
                     question.setScore(0);
                 } else {
-                    question.setScore(250 / question.getNumberOfTries());
+                    question.setScore(250 / question.getNumberOfTries() + 1);
                 }
             }
 
@@ -288,7 +288,11 @@ public class QuestionManager {
             Question question = getByID(mNotAnsweredList, Integer.parseInt(_questionId));
             if(question != null) {
                 question.setNumberOfTries(Integer.parseInt(mapTries.get(questionId)));
-                question.setScore(0);
+                if(question.getNumberOfTries() >= 3) {
+                    question.setScore(0);
+                } else {
+                    question.setScore(250/question.getNumberOfTries() + 1);
+                }
             }
         }
 

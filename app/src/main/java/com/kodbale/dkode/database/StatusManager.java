@@ -155,7 +155,13 @@ public class StatusManager {
     public void updateScoreForCurrentQuestion() {
         int timeAnsweredAt = 300 - mTimeRemaining;
         mCurrentQuestion.setTimeAnsweredAt(timeAnsweredAt);
-        int score = 250 / mCurrentQuestion.getQuestion().getNumberOfTries();
+
+        int score = 0;
+        if(mCurrentQuestion.getQuestion().getNumberOfTries() == 0) {
+            score = 250;
+        } else {
+            score = 250 / (mCurrentQuestion.getQuestion().getNumberOfTries() + 1);
+        }
         mCurrentQuestion.getQuestion().setScore(score);
         updateTotalScore(score);
         writeScoreToFirebase();
