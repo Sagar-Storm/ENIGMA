@@ -9,8 +9,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by sagar on 3/7/18.
@@ -25,7 +30,7 @@ public class StatusManager {
     private FirebaseDatabase mFirebaseDatabase = null;
     private FirebaseHelper mFirebaseHelper = null;
 
-
+    private OkHttpClient client;
 
 
     private CurrentQuestion mCurrentQuestion;
@@ -62,6 +67,7 @@ public class StatusManager {
         mFirebaseHelper = new FirebaseHelper();
         mTimeStamp = null;
         mSolution = new Solutions();
+        client = new OkHttpClient();
     }
 
 
@@ -89,6 +95,26 @@ public class StatusManager {
             Log.i("i", "initializing, initializing");
         }
         return mStatusManager;
+    }
+
+    public String getCurrentTime(){
+        try {
+
+            String str = run("https://google.com/");
+            //Toast.makeText(mAppContext,str,Toast.LENGTH_LONG).show();
+            return str;
+
+        } catch (IOException e) {
+            //Toast.makeText(mAppContext,"Could not get time!",Toast.LENGTH_SHORT).show();
+            return "";
+        }
+
+
+    }
+    String run(String url) throws IOException{
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        return response.header("Date");
     }
 
     public void setTimeStamp(Long timeStamp) {

@@ -1,6 +1,7 @@
 package com.kodbale.dkode.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -22,7 +23,11 @@ import com.kodbale.dkode.login.LoginActivity;
 import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Date;
 
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
@@ -34,7 +39,8 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     StatusManager mStatusManager;
     private ProgressBar progressBar;
     public Handler handler ;
-
+    public long timeStamp;
+    String time;
     private StatusManager statusManager;
 
     public int processing = 0;
@@ -89,6 +95,10 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void run() {
 
+
+
+
+
                     if(processing == 0) {
 
                         mStatusManager.setFirebaseDatabase(FirebaseDatabase.getInstance());
@@ -115,11 +125,24 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                         mStatusManager.get(getApplicationContext()).initializeGameLogin();
 
                         processing = 1;
+                        new timeLessTimer().execute("");
 
                     }
 
-                    if(StatusManager.get(getApplicationContext()).allSet != -1) {
+                    if(StatusManager.get(getApplicationContext()).allSet != -1 && time!="") {
                             allSet();
+                        Date date;
+                        Log.i(TAG, "run: "+time);
+                        try{
+                            DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z");
+                            date = (Date)formatter.parse(time);
+                            timeStamp = date.getTime()/1000;
+                            Toast.makeText(getApplicationContext(),timeStamp+"",Toast.LENGTH_LONG).show();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(),"errr",Toast.LENGTH_LONG).show();
+                        }
+
                     } else {
                         handler.postDelayed(this, 100);
                     }
@@ -133,6 +156,17 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
          //   QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();
 
     }
+
+    private class timeLessTimer extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+            time = StatusManager.get(getApplicationContext()).getCurrentTime();
+
+            return null;
+        }
+    }
+
 
     public void allSet() {
 

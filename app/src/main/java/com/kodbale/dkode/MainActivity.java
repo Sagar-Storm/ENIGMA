@@ -44,6 +44,7 @@ import com.kodbale.dkode.fragments.PicFragment;
 import com.kodbale.dkode.login.LoginActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CurrentQuestion mCurrentQuestion;
     public long timeRemaining = 1000;
 
+    public long timeStamp;
+    public Date date;
 
 
     // Action bar
@@ -215,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              new MaterialStyledDialog.Builder(this)
                      .setTitle("Oh no!")
                      .withDivider(true)
+                     .setCancelable(false)
                      .setDescription("Are you sure you want to skip, you won't be able to come back to this question!!")
                      .setPositiveText("I'm sure!")
                      .setIcon(R.drawable.broken_heart)
@@ -260,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Oops...")
+                        .setCancelable(true)
                         .setDescription("Couldn't get a good angle, take photo again!")
                         .show();
 
@@ -281,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .setTitle("Good job!")
                         .setDescription("You solved the problem!")
                         .setPositiveText("Okay!")
+                        .setCancelable(false)
                         .setIcon(R.drawable.celebration)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
