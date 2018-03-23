@@ -40,7 +40,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     private ProgressBar progressBar;
     public Handler handler ;
     public long timeStamp;
-    String time;
+    String time="";
     private StatusManager statusManager;
 
     public int processing = 0;
@@ -123,13 +123,11 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                         //fetches the timestamp of the user. It sets allset = 0 if previously not loggedin, else allset = 1 if loggedin
                         //this sets the timestamp variable to the logged_in_at thing
                         mStatusManager.get(getApplicationContext()).initializeGameLogin();
-
-                        processing = 1;
                         new timeLessTimer().execute("");
-
+                        processing = 1;
                     }
 
-                    if(StatusManager.get(getApplicationContext()).allSet != -1 && time!="") {
+                    if(StatusManager.get(getApplicationContext()).allSet != -1) {
                             allSet();
                         Date date;
                         Log.i(TAG, "run: "+time);
@@ -165,6 +163,11 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+        }
     }
 
 
@@ -186,7 +189,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         if(mStatusManager.getTimeStamp() == null) {
-            long unixTime = System.currentTimeMillis() / 1000L;
+            long unixTime = timeStamp;
             System.out.println("the time is" + unixTime);
             mStatusManager.setTimeStamp(unixTime);
             mStatusManager.writeTimeStampToFirebase(unixTime);
@@ -194,7 +197,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             //TODO use a web api to fetch time
 
-            long currentUnixTime = System.currentTimeMillis()/1000L;
+            long currentUnixTime = timeStamp;
             long loggedInUnixtime = mStatusManager.getTimeStamp();
 
             long currentTimeRemaining = 1000 - (currentUnixTime - loggedInUnixtime);

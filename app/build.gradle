@@ -27,7 +27,7 @@ dependencies {
 
     compile 'com.android.support:design:27.1.0'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
-    compile 'com.android.support:appcompat-v7:27.1.0'
+
     implementation 'com.google.firebase:firebase-auth:11.8.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
     implementation 'com.github.blikoon:QRCodeScanner:0.1.2'
