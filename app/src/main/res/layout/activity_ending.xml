@@ -19,7 +19,7 @@
         style="@style/buttonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/scoreBtn"
+        android:layout_below="@id/scoreBtn"
         android:layout_marginBottom="30dp"
         android:onClick="onExitButtonClicked"
         android:text="Exit!" />
@@ -32,18 +32,49 @@
         android:textStyle="bold"
         android:layout_centerInParent="true"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-        android:text="Game has ended mate!"
+        android:text="Game Over!"
         android:textColor="@color/white"
         android:layout_marginBottom="30dp"
         android:textAlignment="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/ByeBye"
+        android:id="@+id/ByeByeBye"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
+        style="@style/textStyle"
+        android:textStyle="bold"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:text="Your final Score :"
+        android:textColor="@color/white"
+        android:layout_marginBottom="30dp"
+        android:textAlignment="center"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/textStyle"
+            android:textStyle="bold"
+            android:id="@+id/finalScoreHolder"
+            android:layout_centerInParent="true"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+            android:text="102"
+            android:textColor="@color/white"
+            android:layout_marginBottom="30dp"
+            android:textAlignment="center"/>
+
+    </LinearLayout>
     <Button
         android:id="@+id/scoreBtn"
         style="@style/buttonStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/ByeByeBye"
         android:onClick="onScoreButtonClicked"
         android:text="See Scores" />
 

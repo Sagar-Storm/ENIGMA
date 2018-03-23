@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +25,7 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseUser mFirebaseUser = null;
     FirebaseAuth.AuthStateListener mAuthListener;
 
-
+    private TextView text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +47,8 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         };
+        text = findViewById(R.id.finalScoreHolder);
+        text.setText("C-ME");
     }
 
     public void onScoreButtonClicked(View view) {
