@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.BufferActivity">
+        <activity android:name=".activities.BufferActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -26,11 +27,16 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".activities.EndingActivity" />
-        <activity android:name=".activities.ScoreActivity" />
-        <activity android:name=".login.LoginActivity" />
-        <activity android:name=".activities.InfoActivity" />
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".activities.EndingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.ScoreActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".login.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.InfoActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 
