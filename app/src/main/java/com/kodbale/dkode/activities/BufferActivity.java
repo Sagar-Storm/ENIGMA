@@ -53,21 +53,24 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         btn.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
-        if(mFirebaseUser == null) {
 
+        // if user is null then take him to login screen
+        if(mFirebaseUser == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-
             Log.i(BufferActivity.TAG, "returning to login becz i suck");
-
             finish();
             return;
 
         }
 
+
+        //setting the user and firebase auth in statusmanager so that it is helpful
         statusManager.setAuth(mFirebaseAuth);
         statusManager.get(getApplicationContext()).setUser(mFirebaseUser);
+
+
 
             Log.i("i", "staying here only");
 
@@ -89,7 +92,26 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                     if(processing == 0) {
 
                         mStatusManager.setFirebaseDatabase(FirebaseDatabase.getInstance());
+
+                        //initialize the answered list and set it. the answered list contains the list of id's that have been attended.
+
+                        //once the answered_list has been set, we call initializefromfirebaselist to initialize answered and not answeredlist of questionManager
+                        // it also sets the mAllquestions of questionManager
                         mStatusManager.get(getApplicationContext()).initializeAnsweredList();
+
+                        //TODO fetch the numberOfTries for each question
+                        mStatusManager.get(getApplicationContext()).initializeNumberOfTriesListInFirebase();
+
+
+                        //TODO fetch the scores for each question
+
+                        // mStatuManager.get(getApplicationContext()).initializenumberoftries();
+
+                        // mStatuManager.get(getApplicationContext()).initializescores();
+
+
+                        //fetches the timestamp of the user. It sets allset = 0 if previously not loggedin, else allset = 1 if loggedin
+                        //this sets the timestamp variable to the logged_in_at thing
                         mStatusManager.get(getApplicationContext()).initializeGameLogin();
 
                         processing = 1;

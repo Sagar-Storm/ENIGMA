@@ -24,6 +24,10 @@ public class StatusManager {
     private FirebaseUser mUser = null;
     private FirebaseDatabase mFirebaseDatabase = null;
     private FirebaseHelper mFirebaseHelper = null;
+
+
+
+
     private CurrentQuestion mCurrentQuestion;
     private int mTimeRemaining;
     private ArrayList<Integer> mAnsweredListIds;
@@ -190,6 +194,26 @@ public class StatusManager {
         mFirebaseDatabase = firebaseDatabase;
         mFirebaseHelper.setFirebaseDatabase(mFirebaseDatabase, mAppContext);
     }
+
+    public void updateNumberOfTriesInFirebase() {
+        mFirebaseHelper.updateNumberOfTriesInFirebase(getCurrentQuestion().getQuestion(), getCurrentQuestion().getQuestion().getNumberOfTries(), mUser);
+    }
+
+    public void initializeNumberOfTriesListInFirebase() {
+        mFirebaseHelper.fetchNumberOfTriesInFirebase(mUser);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void setAuth(FirebaseAuth auth)  {
         mAuth = auth;

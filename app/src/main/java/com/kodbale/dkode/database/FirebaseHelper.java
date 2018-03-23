@@ -26,6 +26,8 @@ import java.util.Map;
 
 public class FirebaseHelper {
 
+    private static final String TAG ="FIREBASE_HELPER";
+
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference ;
     private Context mAppContext;
@@ -75,6 +77,50 @@ public class FirebaseHelper {
         }
     }
 
+    public void updateNumberOfTriesInFirebase(Question question, int numberOfTries, FirebaseUser user) {
+        String _emailId = user.getEmail().split("@")[0];
+        try {
+
+            mDatabaseReference.child(user.getUid()).child(_emailId).child("number_of_tries").child(question.getQuestionId()+"_").setValue(numberOfTries+"");
+        } catch(Exception e) {
+            Log.i(TAG, " couldn't updateNumberOfTriesInFirbase" );
+        }
+    }
+
+    public void fetchNumberOfTriesInFirebase(FirebaseUser user) {
+        String _emailId = user.getEmail().split("@")[0];
+
+        try {
+            DatabaseReference databaseReference = mDatabaseReference.child(user.getUid()).child(_emailId).child("number_of_tries");
+
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<HashMap<String, String>> t = new GenericTypeIndicator<HashMap<String, String>>() {};
+                    Map<String, String> numberOfTriesMap;
+                    System.out.println(dataSnapshot.getValue());
+                    numberOfTriesMap =(HashMap<String, String>) dataSnapshot.getValue(t);
+                    if(numberOfTriesMap != null) {
+                        for (String integer : numberOfTriesMap.keySet()) {
+                            System.out.println(numberOfTriesMap.get(integer) + "for the question" + integer.split("_")[0]);
+                        }
+                        QuestionManager.get(mAppContext).updateNumberOfTriesFromFirebaseMap(numberOfTriesMap);
+                    } else {
+                        Log.i("i", "number of tries fetched is null, user is fresh");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    System.out.println("The read failed: " + databaseError.getCode());
+                }
+            });
+        } catch(Exception e) {
+            Log.i("TAG", "error fetching numberoftries from firebase");
+        }
+    }
+
+
 
     public String getEmailStripped(String emailId) {
         String emailIdSplit[] = emailId.split("@");
@@ -83,6 +129,7 @@ public class FirebaseHelper {
     }
 
     public void fetchAnsweredList(FirebaseUser user) {
+
         Log.i("i", "fetch answerd list from fb called");
         String emailId = getEmailStripped(user.getEmail());
 
@@ -93,6 +140,7 @@ public class FirebaseHelper {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<List<Integer>> t = new GenericTypeIndicator<List<Integer>>() {};
                 ArrayList<Integer> answeredListIds = (ArrayList<Integer>) dataSnapshot.getValue(t);
+
                 if(answeredListIds != null) {
                     StatusManager.get(mAppContext).setAnsweredListIds(answeredListIds);
                     System.out.println("size of firebase answerd list " + StatusManager.get(mAppContext).getAnsweredListIds().size());
@@ -118,6 +166,7 @@ public class FirebaseHelper {
     }
 
     public void getTimeStamp(FirebaseUser user) {
+
         String emailId = getEmailStripped(user.getEmail());
         System.out.println("timestamp" + emailId);
             DatabaseReference databaseReference = mDatabaseReference.child(user.getUid()).child(emailId).child("logged_in_at");
@@ -147,6 +196,10 @@ public class FirebaseHelper {
             });
 
     }
+
+
+
+
 
     class ScoreObject {
 

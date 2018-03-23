@@ -8,6 +8,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.kodbale.dkode.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by sagar on 2/25/18.
@@ -19,6 +22,7 @@ public class QuestionManager {
     private static DatabaseHelper mDatabaseHelper;
     private static QuestionManager mQuestionManager = null;
     private static ArrayList<Question> mNotAnsweredList = null, mAnsweredList = null;
+    private static ArrayList<Question> mAllQuestions;
     private Context mAppContext;
     private SharedPreferences mSharedPref;
 
@@ -27,6 +31,7 @@ public class QuestionManager {
         mDatabaseHelper = new DatabaseHelper(mAppContext);
         mNotAnsweredList = new ArrayList<>();
         mAnsweredList = new ArrayList<>();
+        mAllQuestions = null;
         mSharedPref = mAppContext.getSharedPreferences("app_data", Context.MODE_PRIVATE);
     }
 
@@ -53,11 +58,13 @@ public class QuestionManager {
     }
 
     public int insertIntoNotAnswered(Question question) {
+
        if(mNotAnsweredList == null) {
            return 0;
        }
        mNotAnsweredList.add(question);
        return 1;
+
     }
 
     public int insertIntoAnswered(Question question) {
@@ -82,6 +89,7 @@ public class QuestionManager {
     }
 
     public ArrayList<Question> getAllQuestions() {
+
         DatabaseHelper.QuestionCursor mQuestionCursor = mDatabaseHelper.queryQuestions();
         ArrayList<Question> questionsList = new ArrayList<>();
         if(mQuestionCursor.getCount() != 0) {
@@ -110,8 +118,6 @@ public class QuestionManager {
         if(savedUser == null || (!currentUser.equals(savedUser))) {
 
             mQuestionManager.deleteAllRows();
-
-
 
             mQuestionManager.insertQuestion(new Question("Question1", "answer1", 1,false,0,"R.drawable.one"));
             mQuestionManager.insertQuestion(new Question("Question2", "answer2", 2,false,0,"R.drawable.two"));
@@ -145,14 +151,16 @@ public class QuestionManager {
 
     public  void initializeFromFirebaseList() {
 
-        ArrayList<Question> questionsList = getAllQuestions();
+        mAllQuestions = getAllQuestions();
+
         ArrayList<Integer> questionIds = new ArrayList<>() ;
-        for(int i = 0; i < questionsList.size(); i++) {
-            questionIds.add(questionsList.get(i).getQuestionId());
+
+        for(int i = 0; i < mAllQuestions.size(); i++) {
+            questionIds.add(mAllQuestions.get(i).getQuestionId());
         }
 
         ArrayList<Integer> answeredListIds = StatusManager.get(mAppContext).getAnsweredListIds();
-        mNotAnsweredList = questionsList;
+        mNotAnsweredList = mAllQuestions;
 
         System.out.println( "sizeof answerded after fetch" + answeredListIds.size());
         System.out.println("Size of answered list " + mAnsweredList.size());
@@ -160,13 +168,15 @@ public class QuestionManager {
 
         for(int i = 0; i < answeredListIds.size(); i++) {
             if(questionIds.contains(answeredListIds.get(i))) {
-                int indexOfQuestion = getQuestionById(questionsList, answeredListIds.get(i));
+                int indexOfQuestion = getQuestionById(mAllQuestions, answeredListIds.get(i));
                 if(indexOfQuestion != -1) {
-                    mAnsweredList.add(questionsList.get(indexOfQuestion));
-                    mNotAnsweredList.remove(questionsList.get(indexOfQuestion));
+                    mAnsweredList.add(mAllQuestions.get(indexOfQuestion));
+                    mAllQuestions.get(indexOfQuestion).setIsAnswered(true);
+                    mNotAnsweredList.remove(mAllQuestions.get(indexOfQuestion));
                 }
             }
         }
+
         System.out.println("size of not answered " + mNotAnsweredList.size());
         System.out.println("Size of answered list " + mAnsweredList.size());
         System.out.println("sizeof notanswerded" + mNotAnsweredList.size());
@@ -223,10 +233,13 @@ public class QuestionManager {
         if( mNotAnsweredList.size() == 0) {
            return null;
         }
+
+        Random generator = new Random();
+        int index = generator.nextInt(mNotAnsweredList.size());
         Log.i("d", "size before" + mNotAnsweredList.size());
-        Question question = mNotAnsweredList.get(0);
+        Question question = mNotAnsweredList.get(index);
         mAnsweredList.add(question);
-        mNotAnsweredList.remove(0);
+        mNotAnsweredList.remove(index);
         Log.i("d", "size after" + mNotAnsweredList.size() + question.getQuestionText());
         return question;
     }
@@ -240,11 +253,59 @@ public class QuestionManager {
         mDatabaseHelper.updateAnsweredStatus(id) ;
     }
 
+
+
+
+
+
+
     public void updateNumberOfTries() {
         int numberOfTries = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getNumberOfTries();
         int id = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getQuestionId();
         mDatabaseHelper.updateNumberOfTries(id, numberOfTries);
     }
+
+    public void updateNumberOfTriesFromFirebaseMap(Map<String, String> mapTries) {
+
+        for(String questionId: mapTries.keySet()) {
+
+            String _questionId = questionId.split("_")[0];
+            Question question = getByID(mAnsweredList, Integer.parseInt(_questionId));
+            if(question != null) {
+                question.setNumberOfTries(Integer.parseInt(mapTries.get(questionId)));
+                if(question.getNumberOfTries() >= 3) {
+                    question.setScore(0);
+                } else {
+                    question.setScore(250 / question.getNumberOfTries());
+                }
+            }
+
+        }
+
+        for(String questionId: mapTries.keySet()) {
+
+            String _questionId = questionId.split("_")[0];
+            Question question = getByID(mNotAnsweredList, Integer.parseInt(_questionId));
+            if(question != null) {
+                question.setNumberOfTries(Integer.parseInt(mapTries.get(questionId)));
+                question.setScore(0);
+            }
+        }
+
+    }
+
+
+
+    public Question getByID(ArrayList<Question> mList,int id) {
+
+        for(int i = 0; i < mList.size(); i++) {
+            if(mList.get(i).getQuestionId() == id) {
+                return mList.get(i);
+            }
+        }
+        return null;
+    }
+
 
 
 

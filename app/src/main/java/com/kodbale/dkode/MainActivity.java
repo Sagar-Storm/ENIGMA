@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Wrong Answer!")
-                        .setStyle(Style.HEADER_WITH_TITLE).setCancelable(false)
+                        .setStyle(Style.HEADER_WITH_TITLE)
                         .setDescription("But we really need the permission to continue, if you keep pressing no, it will run" +
                                 " into an infinite loop!")
                         .show();
@@ -121,10 +121,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mQuestionShower = (ImageButton) findViewById(R.id.questionDisplayer);
         submit = (Button) findViewById(R.id.submit);
         skip = (Button) findViewById(R.id.skip);
-
         mTimerTextView = (TextView) findViewById(R.id.timer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
+
+
+
+        //sees to set the time remaining of the logged_in user
         if(getIntent().getExtras() != null) {
             Long timeExtra = getIntent().getExtras().getLong("TIME_REMAINING");
             Toast.makeText(this, "extra was there", Toast.LENGTH_SHORT).show();
@@ -133,29 +136,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 timeRemaining = timeExtra;
             }
         }
+
         mTimerTextView.setText(timeRemaining+"");
-
-
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
         mQuestionManager = QuestionManager.get(getApplicationContext());
         mStatusManager = StatusManager.get(getApplicationContext());
 
-        mCurrentQuestion = mStatusManager.getCurrentQuestion();
-
-
-        QuestionManager.get(getApplicationContext()).insertAllQuestions();
 
 
 
-
-
-        Log.i("i", "inserted questions");
-
-
-
-
+//decrements the time every seconds
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -170,9 +162,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
         };
-
         handler = new Handler();
         handler.postDelayed(runnable, 1000);
+
+
+
 
         if(QuestionManager.get(getApplicationContext()).getNotAnsweredList().size() == 0) {
             Toast.makeText(this,"You have finished all questions", Toast.LENGTH_SHORT).show();
@@ -294,8 +288,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 mStatusManager.updateScoreForCurrentQuestion();
                                 mStatusManager.updateAnsweredStatusForCurrentQuestion();
+
+
                                 long questionUUID = getQuestionUUID();
                                 int currentQuestionScore = getCurrentQuestionScore();
+
                                 mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
                                 mQuestionManager.updateAnsweredStatusInDb();
                                 setUpQuestion();
@@ -306,23 +303,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             } else {
 
+
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Failure!")
                         .setDescription("Wrong answer mate!")
                         .setPositiveText("Retry!")
                         .setIcon(R.drawable.thumb)
+                        .setCancelable(false)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 mStatusManager.incrementNoOfTries();
                                 mQuestionManager.updateNumberOfTries();
+                                mStatusManager.updateNumberOfTriesInFirebase();
+
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                     mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();
                                     dialog.dismiss();
                                 }
+
                                 dialog.dismiss();
+
                             }
                         })
                         .show();
