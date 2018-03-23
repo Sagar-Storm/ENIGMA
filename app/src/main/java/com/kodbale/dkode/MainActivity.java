@@ -88,9 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.score:
                 startActivity(new Intent(getApplicationContext(), ScoreActivity.class));
                 break;
-            case R.id.info:
-                startActivity(new Intent(getApplicationContext(), InfoActivity.class));
-                break;
+            
         }
         return super.onOptionsItemSelected(item);
     }
