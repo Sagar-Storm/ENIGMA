@@ -49,7 +49,7 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void onScoreButtonClicked(View view) {
-
+        startActivity(new Intent(EndingActivity.this,ScoreActivity.class));
     }
 
     @Override
@@ -67,6 +67,8 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
         FirebaseAuth.getInstance().signOut();
+        StatusManager.get(getApplicationContext()).setAllToNull();
+        QuestionManager.get(getApplicationContext()).setAllToNull();
         finish();
     }
 }

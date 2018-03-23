@@ -11,11 +11,13 @@ import android.database.CursorWrapper;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.kodbale.dkode.R;
+
 /**
  * Created by sagar on 2/24/18.
  */
 
-public class DatabaseHelper extends SQLiteOpenHelper{
+public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "dkode.sqlite";
 
@@ -37,6 +39,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String COLUMN_NUMBER_OF_TRIES = "number_of_tries";
 
+    private static final String COLUMN_IMAGE_PATH = "image_path";
+
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null,  VERSION);
@@ -45,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table questions (" + "question_no integer primary key autoincrement, question_text varchar(1000), answer_text varchar(1000), question_uuid int, is_answered int, score int, number_of_tries int)");
+        db.execSQL("create table questions (" + "question_no integer primary key autoincrement, question_text varchar(1000), answer_text varchar(1000), question_uuid int, is_answered int, score int, number_of_tries int, image_path int)");
     }
 
     @Override
@@ -64,13 +68,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
     public long  insertQuestion(Question question) {
+
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_QUESTION_TEXT, question.getQuestionText());
         cv.put(COLUMN_ANSWER_TEXT, question.getAnswerText());
         cv.put(COLUMN_QUESTION_UUID, question.getQuestionId());
         cv.put(COLUMN_IS_ANSWERED, isTrue(question.isIsAnswerd()));
         cv.put(COLUMN_SCORE, question.getScore());
-        cv.put(COLUMN_NUMBER_OF_TRIES, 1);
+        cv.put(COLUMN_NUMBER_OF_TRIES, 0);
+        cv.put(COLUMN_IMAGE_PATH, question.getImagePath());
+
         Log.i("inserted", "inserted mate");
         return getReadableDatabase().insert(TABLE_QUESTIONS, null, cv);
     }
@@ -130,7 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         }
 
 
-        Question createNewQuestion(int id, String questionText, String answerText, boolean isAnswered, int score, int numberOfTries) {
+        Question createNewQuestion(int id, String questionText, String answerText, boolean isAnswered, int score, int numberOfTries, String imagePath) {
             Question question = new Question();
             question.setQuestionId(id);
             question.setQuestionText(questionText);
@@ -138,6 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             question.setIsAnswered(isAnswered);
             question.setScore(score);
             question.setNumberOfTries(numberOfTries);
+            question.setImagePath(imagePath);
             return question;
         }
 
@@ -150,7 +158,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             boolean isAnswered = (getInt(getColumnIndex(COLUMN_IS_ANSWERED)) != 0) ? true: false;
             int score = getInt(getColumnIndex(COLUMN_SCORE));
             int numberOfTries = getInt(getColumnIndex(COLUMN_NUMBER_OF_TRIES));
-            Question question = createNewQuestion(questionId, questionText, answerText, isAnswered, score, numberOfTries);
+            String imagePath = getString(getColumnIndex(COLUMN_IMAGE_PATH));
+            Question question = createNewQuestion(questionId, questionText, answerText, isAnswered, score, numberOfTries, imagePath);
             return question;
 
         }

@@ -14,3 +14,4 @@ Thumbs.db
 app/app.iml
 build/android-profile/*
 .idea/libraries/*
+app/src/main/java/com/kodbale/dkode/database/Solutions.java

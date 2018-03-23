@@ -7,12 +7,15 @@ import java.util.UUID;
  */
 
 public class Question {
+
+
     private int mQuestionId;
     private  String mQuestionText ;
     private String mAnswerText;
     private boolean mIsAnswerd;
     private int mScore;
-    private int mNumberOfTries = 1;
+    private int mNumberOfTries = 0;
+    private String mImagePath;
 
     public Question() {
         mQuestionText = "Dummy Text";
@@ -20,7 +23,8 @@ public class Question {
         mQuestionId = -1;
         mIsAnswerd = false;
         mScore = 0;
-        mNumberOfTries = 1;
+        mNumberOfTries = 0;
+        mImagePath = "";
     }
 
 
@@ -42,16 +46,27 @@ public class Question {
         this.mQuestionId = q.mQuestionId;
         this.mIsAnswerd = q.mIsAnswerd;
         this.mScore = q.mScore;
+        this.mImagePath = q.mImagePath;
     }
 
     public Question(String mQuestionText, String mAnswerText, int mQuestionId, boolean mIsAnswerd,
         int  mScore
-    ) {
+    , String mImagePath) {
         this.mQuestionText = mQuestionText;
         this.mAnswerText  = mAnswerText;
         this.mQuestionId = mQuestionId;
         this.mIsAnswerd = mIsAnswerd;
         this.mScore = mScore;
+        this.mImagePath = mImagePath;
+    }
+
+
+    public String getImagePath() {
+        return mImagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.mImagePath = imagePath;
     }
 
     public String getQuestionText() {

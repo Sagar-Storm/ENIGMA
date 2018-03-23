@@ -55,14 +55,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressBar.setVisibility(View.VISIBLE);
         if ( email.isEmpty() ) {
             groupId.setError("Email can't be empty");
+            btn.setEnabled(true);
             return;
         }
         if (password.isEmpty()){
             groupPass.setError("Password cant be empty");
+            btn.setEnabled(true);
             return;
         }
         if(!isNetworkAvailableAndConnected()) {
             progressBar.setVisibility(View.INVISIBLE);
+            btn.setEnabled(true);
             Toast.makeText(getApplicationContext(),"Network not available",Toast.LENGTH_SHORT).show();
             return ;
         }
@@ -75,6 +78,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Toast.makeText(getApplicationContext(), "Check your creds!",
                                     Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.INVISIBLE);
+                            btn.setEnabled(true);
 
                         } else {
                             makeLogin();
@@ -83,7 +87,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startActivity(intent);
                             Log.i("i", "logging in");
                             progressBar.setVisibility(View.INVISIBLE);
-                            finishActivity(900);
+
+                            finish();
 
                         }
                     }

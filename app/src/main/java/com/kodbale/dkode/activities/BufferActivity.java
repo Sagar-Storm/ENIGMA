@@ -26,7 +26,7 @@ import java.time.Instant;
 
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
-
+    private static final String TAG = "BufferActivity";
     TextView tv;
     Button btn;
     FirebaseAuth mFirebaseAuth;
@@ -34,6 +34,8 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     StatusManager mStatusManager;
     private ProgressBar progressBar;
     public Handler handler ;
+
+    private StatusManager statusManager;
 
     public int processing = 0;
 
@@ -47,37 +49,51 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         progressBar = (ProgressBar) findViewById(R.id.loadingDataProgressBar);
         mFirebaseAuth = mFirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-
+        statusManager = StatusManager.get(getApplicationContext());
         btn.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
         if(mFirebaseUser == null) {
+
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            Log.i("i", "returning to login becz i suck");
+
+            Log.i(BufferActivity.TAG, "returning to login becz i suck");
+
             finish();
             return;
+
         }
 
-            StatusManager.get(getApplicationContext()).setAuth(mFirebaseAuth);
-            StatusManager.get(getApplicationContext()).setUser(mFirebaseUser);
+        statusManager.setAuth(mFirebaseAuth);
+        statusManager.get(getApplicationContext()).setUser(mFirebaseUser);
+
             Log.i("i", "staying here only");
+
             Log.i("i", mFirebaseUser.getEmail());
+
             QuestionManager.get(getApplicationContext()).insertAllQuestions();
+
             Log.i("i", "inserted questions");
+
             mStatusManager = StatusManager.get(getApplicationContext());
 
 
             handler = new Handler();
+
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+
                     if(processing == 0) {
-                        StatusManager.get(getApplicationContext()).setFirebaseDatabase(FirebaseDatabase.getInstance());
-                        StatusManager.get(getApplicationContext()).initializeAnsweredList();
-                        StatusManager.get(getApplicationContext()).initializeGameLogin();
+
+                        mStatusManager.setFirebaseDatabase(FirebaseDatabase.getInstance());
+                        mStatusManager.get(getApplicationContext()).initializeAnsweredList();
+                        mStatusManager.get(getApplicationContext()).initializeGameLogin();
+
                         processing = 1;
+
                     }
 
                     if(StatusManager.get(getApplicationContext()).allSet != -1) {
@@ -120,9 +136,13 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             mStatusManager.writeTimeStampToFirebase(unixTime);
 
         } else {
+            //TODO use a web api to fetch time
+
             long currentUnixTime = System.currentTimeMillis()/1000L;
             long loggedInUnixtime = mStatusManager.getTimeStamp();
-            long currentTimeRemaining = 100 - (currentUnixTime - loggedInUnixtime);
+
+            long currentTimeRemaining = 1000 - (currentUnixTime - loggedInUnixtime);
+
             if(currentTimeRemaining <= 0 ) {
                  intent = new Intent(this, EndingActivity.class);
                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -131,6 +151,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                  finish();
                  return;
             }
+
             intent.putExtra("TIME_REMAINING", currentTimeRemaining);
             System.out.println("current_timeremaining" + currentTimeRemaining+"");
         }

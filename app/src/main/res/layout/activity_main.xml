@@ -58,11 +58,13 @@
             android:layout_weight="1"
             />
     </LinearLayout>
-    <FrameLayout
+    <ImageButton
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/dumm"
-        android:id="@+id/frame" />
+        tools:src="@drawable/one"
+        android:scaleType="fitXY"
+        android:id="@+id/questionDisplayer" />
     </RelativeLayout>
 
 </RelativeLayout>

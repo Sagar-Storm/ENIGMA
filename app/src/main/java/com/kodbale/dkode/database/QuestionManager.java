@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.kodbale.dkode.R;
 
 import java.util.ArrayList;
 
@@ -107,11 +108,28 @@ public class QuestionManager {
         String savedUser = mSharedPref.getString("current_user", null);
 
         if(savedUser == null || (!currentUser.equals(savedUser))) {
+
             mQuestionManager.deleteAllRows();
-            mQuestionManager.insertQuestion(new Question("That's it1?", "answer not revealed", 123,false,0));
-            mQuestionManager.insertQuestion(new Question("That's it2?", "answer not revealed", 124,false,0));
-            mQuestionManager.insertQuestion(new Question("That's it3?", "answer not revealed", 125,false,0));
-            mQuestionManager.insertQuestion(new Question("That's it4?", "answer not revealed", 126,false,0));
+
+
+
+            mQuestionManager.insertQuestion(new Question("Question1", "answer1", 1,false,0,"R.drawable.one"));
+            mQuestionManager.insertQuestion(new Question("Question2", "answer2", 2,false,0,"R.drawable.two"));
+            mQuestionManager.insertQuestion(new Question("Question3", "answer3", 3,false,0,"R.drawable.three"));
+            mQuestionManager.insertQuestion(new Question("Question4", "answer4", 4,false,0,"R.drawable.four"));
+            mQuestionManager.insertQuestion(new Question("Question5", "answer5", 5,false,0,"R.drawable.five"));
+            mQuestionManager.insertQuestion(new Question("Question6", "answer6", 6,false,0,"R.drawable.six"));
+            mQuestionManager.insertQuestion(new Question("Question7", "answer6", 7, false,0,"R.drawable.seven"));
+            mQuestionManager.insertQuestion(new Question("Question8", "answer7", 8,false,0, "R.drawable.eight"));
+            mQuestionManager.insertQuestion(new Question("Question9", "answer8", 9,false,0,"R.drawable.nine"));
+            mQuestionManager.insertQuestion(new Question("Question10", "answer9", 10,false,0,"R.drawable.ten"));
+            mQuestionManager.insertQuestion(new Question("Question11", "answer10", 11,false,0,"R.drawable.eleven"));
+            mQuestionManager.insertQuestion(new Question("Question12", "answer11", 11, false,0,"R.drawable.twelve"));
+            mQuestionManager.insertQuestion(new Question("Question13", "answer12", 12,false,0, "R.drawable.thirteen"));
+            mQuestionManager.insertQuestion(new Question("Question14", "asnwer13", 13,false,0,"R.drawable.fourteen"));
+            mQuestionManager.insertQuestion(new Question("Question15", "answer14", 14,false,0,"R.drawable.fifteen"));
+
+
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putString("inserted_before", "1");
             editor.putString("current_user", currentUser);

@@ -1,10 +1,12 @@
 package com.kodbale.dkode;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
@@ -35,11 +38,14 @@ import com.kodbale.dkode.activities.ScoreActivity;
 import com.kodbale.dkode.database.CurrentQuestion;
 import com.kodbale.dkode.database.Question;
 import com.kodbale.dkode.database.QuestionManager;
+import com.kodbale.dkode.database.Solutions;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.fragments.PicFragment;
 import com.kodbale.dkode.login.LoginActivity;
 
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -58,8 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int camRequestCode = 107;
     private Handler handler;
     public Thread mThread;
+    private ImageButton mQuestionShower;
     private CurrentQuestion mCurrentQuestion;
-    public long timeRemaining = 100;
+    public long timeRemaining = 1000;
 
 
 
@@ -94,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Wrong Answer!")
-                        .setStyle(Style.HEADER_WITH_TITLE)
+                        .setStyle(Style.HEADER_WITH_TITLE).setCancelable(false)
                         .setDescription("But we really need the permission to continue, if you keep pressing no, it will run" +
                                 " into an infinite loop!")
                         .show();
@@ -111,9 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         // Instantiations
+        mQuestionShower = (ImageButton) findViewById(R.id.questionDisplayer);
         submit = (Button) findViewById(R.id.submit);
         skip = (Button) findViewById(R.id.skip);
-        frame = (FrameLayout) findViewById(R.id.frame);
+
         mTimerTextView = (TextView) findViewById(R.id.timer);
         toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.tools);
         setSupportActionBar(toolbar);
@@ -127,17 +135,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         mTimerTextView.setText(timeRemaining+"");
 
-    /*    *//*
-        Asking for permissions
-         *//*
-        Context context = getApplicationContext();
-    *//*    if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
-        }*//*
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.frame, textQuestion).commit();
-*/
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
@@ -148,14 +146,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         QuestionManager.get(getApplicationContext()).insertAllQuestions();
-       /* QuestionManager.get(getApplicationContext()).insertAllQuestions();
+
+
+
+
 
         Log.i("i", "inserted questions");
 
-        StatusManager.get(getApplicationContext()).initializeAnsweredList();
-        QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();*/
-        //QuestionManager.get(getApplicationContext()).initializeNotAnsweredList();
-        //QuestionManager.get(getApplicationContext()).initializeAnsweredList();
+
 
 
         final Runnable runnable = new Runnable() {
@@ -185,10 +183,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
 
         } else {
+            ArrayList<Question> notAnsweredList = QuestionManager.get(getApplicationContext()).getNotAnsweredList();
+            ArrayList<Question>  answeredList = QuestionManager.get(getApplicationContext()).getAnsweredList();
 
-            PicFragment picFragment = new PicFragment();
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.frame, picFragment).commit();
+            //TODO
+            //update the database to reflect that the item has been isanswered with score = 0
+            Question question = notAnsweredList.get(0);
+            notAnsweredList.remove(0);
+            answeredList.add(question);
+            StatusManager.get(getApplicationContext()).setCurrentQuestion(question);
+            int id = getmeimageid(question.getQuestionId());
+            Drawable res = getResources().getDrawable(id);
+            mQuestionShower.setImageDrawable(res);
 
         }
 
@@ -272,16 +278,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(data==null)
                 return;
 
-            String solution = "something";
             String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
 
-            solution = result;
+            String answer_text = mStatusManager.getCurrentQuestion().getQuestion().getAnswerText();
 
-
-
-
-            if(result.equals(solution)) {
-
+            if(Solutions.mSolutions.containsKey(answer_text) && Solutions.mSolutions.get(answer_text).equals(result)) {
                 new MaterialStyledDialog.Builder(this)
                         .setTitle("Good job!")
                         .setDescription("You solved the problem!")
@@ -372,10 +373,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
 
             mStatusManager.setCurrentQuestion(question);
+            int id = getmeimageid(question.getQuestionId());
+            Log.i("i", "the image is " + question.getImagePath());
+            Drawable res = getResources().getDrawable(id);
+            mQuestionShower.setImageDrawable(res);
 
         }
     }
 
+
+    public int getmeimageid(int questionid) {
+        switch(questionid) {
+            case 1: return R.drawable.one;
+            case 2: return R.drawable.two;
+            case 3: return R.drawable.three;
+            case 4: return R.drawable.four;
+            case 5: return R.drawable.five;
+            case 6: return R.drawable.six;
+            case 7: return R.drawable.seven;
+            case 8: return R.drawable.eight;
+            case 9: return R.drawable.nine;
+            case 10: return R.drawable.ten;
+            case 11: return R.drawable.eleven;
+            case 12: return R.drawable.twelve;
+            case 13: return R.drawable.thirteen;
+            case 14: return R.drawable.fourteen;
+            case 15: return R.drawable.fifteen;
+            default: return R.drawable.enigma_logo;
+        }
+    }
 
 
 }

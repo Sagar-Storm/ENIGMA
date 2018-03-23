@@ -34,6 +34,7 @@ public class FirebaseHelper {
     }
 
     public void setFirebaseDatabase(FirebaseDatabase firebaseDatabase, Context context) {
+
         mFirebaseDatabase = firebaseDatabase;
         if(mFirebaseDatabase != null) {
             mDatabaseReference = mFirebaseDatabase.getReference("userData/scores/");
@@ -49,7 +50,9 @@ public class FirebaseHelper {
         String _score = Integer.toString(score);
         Log.i("score", Integer.toString(score));
         Log.i("questoinID", Integer.toString(questionID));
+
         String _emailId = user.getEmail().split("@")[0];
+
         try {
             mDatabaseReference.child(user.getUid()).child(_emailId).child("score_details").push().setValue(new ScoreObject(questionID, score));
             Map<String, Integer> finalScoreMap = new HashMap<>();

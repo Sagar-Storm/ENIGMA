@@ -17,6 +17,7 @@ import java.util.ArrayList;
  */
 
 public class StatusManager {
+
     public static final String TAG = "Status Manager";
 
     private FirebaseAuth mAuth = null;
@@ -28,7 +29,7 @@ public class StatusManager {
     private ArrayList<Integer> mAnsweredListIds;
     private Long mTimeStamp;
     public int allSet = -1;
-
+    private Solutions mSolution ;
 
 
     int mTotalQuestionsShown = 0;
@@ -46,6 +47,7 @@ public class StatusManager {
 
 
     private StatusManager(Context context) {
+
         mAppContext = context ;
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -55,8 +57,13 @@ public class StatusManager {
         mFirebaseDatabase = null;
         mFirebaseHelper = new FirebaseHelper();
         mTimeStamp = null;
+        mSolution = new Solutions();
     }
 
+
+    public Solutions getSolutions() {
+        return mSolution;
+    }
 
     public void initializeGameLogin() {
 
