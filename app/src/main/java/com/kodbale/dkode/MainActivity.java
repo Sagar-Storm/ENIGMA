@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public Thread mThread;
     private ImageButton mQuestionShower;
     private CurrentQuestion mCurrentQuestion;
-    public long timeRemaining = 1000;
+    public long timeRemaining = 5200;
 
     public long timeStamp;
     public Date date;

@@ -132,14 +132,14 @@ public class QuestionManager {
             mQuestionManager.insertQuestion(new Question("Question11", "answer11", 11,false,0,"R.drawable.eleven"));
             mQuestionManager.insertQuestion(new Question("Question12", "answer12", 12, false,0,"R.drawable.twelve"));
             mQuestionManager.insertQuestion(new Question("Question13", "answer13", 13,false,0, "R.drawable.thirteen"));
-            mQuestionManager.insertQuestion(new Question("Question14", "asnwer14", 14,false,0,"R.drawable.fourteen"));
+            mQuestionManager.insertQuestion(new Question("Question14", "answer14", 14,false,0,"R.drawable.fourteen"));
             mQuestionManager.insertQuestion(new Question("Question15", "answer15", 15,false,0,"R.drawable.fifteen"));
-
 
             SharedPreferences.Editor editor = mSharedPref.edit();
             editor.putString("inserted_before", "1");
             editor.putString("current_user", currentUser);
             editor.apply();
+
         }
         else {
             Log.i("i", "it was inserted already");

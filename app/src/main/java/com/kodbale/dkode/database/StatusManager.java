@@ -4,6 +4,8 @@ import android.content.Context;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +33,11 @@ public class StatusManager {
     private FirebaseHelper mFirebaseHelper = null;
 
     private OkHttpClient client;
+    private RequestQueue requestQueue;
 
+    public RequestQueue getRequestQueue() {
+        return requestQueue;
+    }
 
     private CurrentQuestion mCurrentQuestion;
     private int mTimeRemaining;
@@ -66,6 +72,7 @@ public class StatusManager {
         mFirebaseDatabase = null;
         mFirebaseHelper = new FirebaseHelper();
         mTimeStamp = null;
+        requestQueue = Volley.newRequestQueue(mAppContext);
         mSolution = new Solutions();
         client = new OkHttpClient();
     }
@@ -97,25 +104,8 @@ public class StatusManager {
         return mStatusManager;
     }
 
-    public String getCurrentTime(){
-        try {
-
-            String str = run("https://google.com/");
-            //Toast.makeText(mAppContext,str,Toast.LENGTH_LONG).show();
-            return str;
-
-        } catch (IOException e) {
-            //Toast.makeText(mAppContext,"Could not get time!",Toast.LENGTH_SHORT).show();
-            return "";
-        }
 
 
-    }
-    String run(String url) throws IOException{
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-        return response.header("Date");
-    }
 
     public void setTimeStamp(Long timeStamp) {
         mTimeStamp = timeStamp;

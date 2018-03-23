@@ -13,6 +13,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,11 +29,15 @@ import com.kodbale.dkode.login.LoginActivity;
 import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,10 +50,12 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     private ProgressBar progressBar;
     public Handler handler ;
     public long timeStamp;
-    String time="";
+    String time ="NULL";
     private StatusManager statusManager;
 
     public int processing = 0;
+
+    public int fetchedUnixTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +107,6 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                 @Override
                 public void run() {
 
-
-
-
-
                     if(processing == 0) {
 
                         mStatusManager.setFirebaseDatabase(FirebaseDatabase.getInstance());
@@ -113,36 +121,23 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                         mStatusManager.get(getApplicationContext()).initializeNumberOfTriesListInFirebase();
 
 
-                        //TODO fetch the scores for each question
-
-                        // mStatuManager.get(getApplicationContext()).initializenumberoftries();
-
-                        // mStatuManager.get(getApplicationContext()).initializescores();
-
 
                         //fetches the timestamp of the user. It sets allset = 0 if previously not loggedin, else allset = 1 if loggedin
                         //this sets the timestamp variable to the logged_in_at thing
                         mStatusManager.get(getApplicationContext()).initializeGameLogin();
-                        new timeLessTimer().execute("");
+                    //    new timeLessTimer().execute("");
+                        getTime();
                         processing = 1;
+                        fetchedUnixTime = 0;
                     }
 
-                    if(StatusManager.get(getApplicationContext()).allSet != -1) {
+                    if(StatusManager.get(getApplicationContext()).allSet != -1 && fetchedUnixTime == 1) {
                             allSet();
-                        Date date;
-                        Log.i(TAG, "run: "+time);
-                        try{
-                            DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss z");
-                            date = (Date)formatter.parse(time);
-                            timeStamp = date.getTime()/1000;
-                            Toast.makeText(getApplicationContext(),timeStamp+"",Toast.LENGTH_LONG).show();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(),"errr",Toast.LENGTH_LONG).show();
-                        }
-
                     } else {
-                        handler.postDelayed(this, 100);
+
+                        Log.i("time not available", "time not available" + fetchedUnixTime );
+                        handler.postDelayed(this, 1000);
+
                     }
 
                 }
@@ -155,18 +150,47 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private class timeLessTimer extends AsyncTask {
 
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            time = StatusManager.get(getApplicationContext()).getCurrentTime();
 
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
+    public void getTime() {
+
+        String url = "http://www.convert-unix-time.com/api?timestamp=now";
+        JSONObject postparams = new JSONObject();
+        try {
+
+
+
+            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    new Response.Listener<JSONObject>()
+                    {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // display response
+                            Log.d("Response", response.toString());
+                            try {
+                                JSONObject jsonObject = new JSONObject(response.toString());
+                                 timeStamp = Long.parseLong(jsonObject.get("timestamp").toString());
+                                fetchedUnixTime = 1;
+                            }catch(Exception e) {
+                                Log.i("i", "exception in getTime()");
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener()
+                    {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Error.Response", error.toString());
+                        }
+                    }
+            );
+
+            getRequest.addMarker("getRequest");
+            StatusManager.get(getApplicationContext()).getRequestQueue().add(getRequest);
+        } catch (Exception e) {
+
         }
     }
 
@@ -177,7 +201,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         progressBar.setVisibility(View.INVISIBLE);
         handler = null;
         processing = 0;
-
+        fetchedUnixTime = 0;
     }
 
     @Override
@@ -200,7 +224,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             long currentUnixTime = timeStamp;
             long loggedInUnixtime = mStatusManager.getTimeStamp();
 
-            long currentTimeRemaining = 1000 - (currentUnixTime - loggedInUnixtime);
+            long currentTimeRemaining = 5200 - (currentUnixTime - loggedInUnixtime);
 
             if(currentTimeRemaining <= 0 ) {
                  intent = new Intent(this, EndingActivity.class);
