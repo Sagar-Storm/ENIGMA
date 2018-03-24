@@ -2,6 +2,7 @@ package com.kodbale.dkode;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -357,6 +358,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return score;
     }
 
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateTime(intent);
+
+        }
+    };
+
+    private void updateTime(Intent intent) {
+        if (intent.getExtras()!=null){
+            long timeRemainingNow = intent.getLongExtra("countdown",0);
+            Log.i("aaa", "updateTime: "+timeRemainingNow);
+        }
+    }
 
 
 

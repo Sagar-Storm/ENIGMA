@@ -64,6 +64,7 @@
         android:layout_above="@id/dumm"
         tools:src="@drawable/one"
         android:scaleType="fitXY"
+        android:background="@android:color/transparent"
         android:id="@+id/questionDisplayer" />
     </RelativeLayout>
 
