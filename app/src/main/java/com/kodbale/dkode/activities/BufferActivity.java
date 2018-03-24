@@ -1,5 +1,7 @@
 package com.kodbale.dkode.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
@@ -23,6 +25,7 @@ import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kodbale.dkode.TimerService;
 import com.kodbale.dkode.database.QuestionManager;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.login.LoginActivity;
@@ -165,8 +168,6 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-
-
     public void getTime() {
 
         String url = "http://www.convert-unix-time.com/api?timestamp=now";
@@ -228,6 +229,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         handler = null ;
 
         Intent intent = new Intent(this, MainActivity.class);
+        Intent ser = new Intent(this, TimerService.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         if(mStatusManager.getTimeStamp() == null) {
@@ -252,13 +254,17 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                  finish();
                  return;
             }
-
+            ser.putExtra("timeToEnd",currentTimeRemaining);
             intent.putExtra("TIME_REMAINING", currentTimeRemaining);
             System.out.println("current_timeremaining" + currentTimeRemaining+"");
         }
+        startService(ser);
         startActivity(intent);
         finish();
     }
+
+
+
 
     @Override
     protected void onStart() {
