@@ -1,6 +1,7 @@
 package com.kodbale.dkode.database;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -76,6 +77,43 @@ public class FirebaseHelper {
             Log.i("answer storing error", "exception in firebase");
         }
     }
+
+
+    public void writeTimeAnswered(Question question,long timeRemaining, FirebaseUser user) {
+
+
+        String _emailId = user.getEmail().split("@")[0];
+        try {
+            String _question_id = question.getQuestionId() +"_";
+            _question_id = _question_id.split("@")[0];
+             mDatabaseReference.child(user.getUid()).child(_emailId).child("time_taken").child(_question_id).setValue(timeRemaining);
+        } catch(Exception e) {
+            Log.i("tag", "can't writeTimeAnswered");
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void updateNumberOfTriesInFirebase(Question question, int numberOfTries, FirebaseUser user) {
         String _emailId = user.getEmail().split("@")[0];

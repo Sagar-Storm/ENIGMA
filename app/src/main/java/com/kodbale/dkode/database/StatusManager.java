@@ -40,7 +40,7 @@ public class StatusManager {
     }
 
     private CurrentQuestion mCurrentQuestion;
-    private int mTimeRemaining;
+    private long mTimeRemaining;
     private ArrayList<Integer> mAnsweredListIds;
     private Long mTimeStamp;
     public int allSet = -1;
@@ -88,11 +88,11 @@ public class StatusManager {
 
     }
 
-    public void setTimeRemaining(int timeRemaining) {
+    public void setTimeRemaining(long timeRemaining) {
         this.mTimeRemaining = timeRemaining ;
     }
 
-    public int getTimeRemaining() {
+    public long getTimeRemaining() {
         return mTimeRemaining;
     }
 
@@ -149,7 +149,7 @@ public class StatusManager {
             int questionId = question.getQuestionId();
             mFirebaseHelper.writeScore(mTotalScore, score, questionId, mUser);
         } catch(Exception e) {
-
+            Log.i("tag", "couldn't write the score to firebase");
         }
     }
 
@@ -168,19 +168,20 @@ public class StatusManager {
     }
 
 
-    public void updateScoreForCurrentQuestion() {
-        int timeAnsweredAt = 300 - mTimeRemaining;
+    public void updateScoreAndTimeForCurrentQuestion() {
+        long timeAnsweredAt = 5200 - mTimeRemaining;
         mCurrentQuestion.setTimeAnsweredAt(timeAnsweredAt);
 
         int score = 0;
         if(mCurrentQuestion.getQuestion().getNumberOfTries() == 0) {
             score = 250;
         } else {
-            score = 250 / (mCurrentQuestion.getQuestion().getNumberOfTries() + 1);
+            score = 250 / (mCurrentQuestion.getQuestion().getNumberOfTries() + 1) ;
         }
         mCurrentQuestion.getQuestion().setScore(score);
         updateTotalScore(score);
         writeScoreToFirebase();
+        mFirebaseHelper.writeTimeAnswered(mCurrentQuestion.getQuestion(), mCurrentQuestion.getTimeRemaining(), mUser);
     }
 
     public void updateAnsweredStatusForCurrentQuestion (){

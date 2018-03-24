@@ -6,10 +6,10 @@ package com.kodbale.dkode.database;
 
 public class CurrentQuestion  {
 
-    public int mTimeAnsweredAt;
+    public long mTimeAnsweredAt;
     private Question mQuestion ;
 
-    CurrentQuestion(Question question, int timeRemaining) {
+    CurrentQuestion(Question question, long timeRemaining) {
         mQuestion = question;
         mTimeAnsweredAt = timeRemaining;
     }
@@ -18,7 +18,7 @@ public class CurrentQuestion  {
         mQuestion = question;
     }
 
-    public void setTimeAnsweredAt(int timeRemaining) {
+    public void setTimeAnsweredAt(long timeRemaining) {
         mTimeAnsweredAt = timeRemaining;
     }
 
@@ -26,7 +26,7 @@ public class CurrentQuestion  {
         return mQuestion;
     }
 
-    public int getTimeRemaining() {
+    public long getTimeRemaining() {
         return mTimeAnsweredAt;
     }
 

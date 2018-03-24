@@ -157,10 +157,8 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
         String url = "http://www.convert-unix-time.com/api?timestamp=now";
         JSONObject postparams = new JSONObject();
+
         try {
-
-
-
             JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>()
                     {

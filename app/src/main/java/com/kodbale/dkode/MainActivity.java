@@ -62,11 +62,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private QuestionManager mQuestionManager;
     private StatusManager mStatusManager;
     private android.support.v7.widget.Toolbar toolbar;
+
+
+
     private int camRequestCode = 107;
+
+
+
+
     private Handler handler;
-    public Thread mThread;
     private ImageButton mQuestionShower;
-    private CurrentQuestion mCurrentQuestion;
+
     public long timeRemaining = 5200;
 
     public long timeStamp;
@@ -133,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Long timeExtra = getIntent().getExtras().getLong("TIME_REMAINING");
             Toast.makeText(this, "extra was there", Toast.LENGTH_SHORT).show();
             if (timeExtra != null) {
-                String timeExtraString = Long.toString(timeExtra);
                 timeRemaining = timeExtra;
             }
         }
@@ -148,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-//decrements the time every seconds
+//decrements the time every second
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -156,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (timeRemaining > 0) {
                         if (handler != null) {
                             handler.postDelayed(this, 1000);
+                            StatusManager.get(getApplicationContext()).setTimeRemaining(timeRemaining);
                             mTimerTextView.setText(timeRemaining + "");
                         }
                     } else {
@@ -225,7 +231,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                          public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
                              mStatusManager.updateAnsweredStatusForCurrentQuestion();
-
                              mQuestionManager.updateAnsweredStatusInDb();
 
                              setUpQuestion();
@@ -290,15 +295,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                                mStatusManager.updateScoreForCurrentQuestion();
+                                mStatusManager.updateScoreAndTimeForCurrentQuestion();
                                 mStatusManager.updateAnsweredStatusForCurrentQuestion();
 
+                                //long questionUUID = getQuestionUUID();
+                                //int currentQuestionScore = getCurrentQuestionScore();
 
-                                long questionUUID = getQuestionUUID();
-                                int currentQuestionScore = getCurrentQuestionScore();
+                                //mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
 
-                                mQuestionManager.updateQuestionScoreInDb(questionUUID, currentQuestionScore);
-                                mQuestionManager.updateAnsweredStatusInDb();
+                               // mQuestionManager.updateAnsweredStatusInDb();
                                 setUpQuestion();
 
                             }
@@ -323,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                                    mQuestionManager.updateAnsweredStatusInDb();
+                                   // mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();
                                     dialog.dismiss();
                                 }
