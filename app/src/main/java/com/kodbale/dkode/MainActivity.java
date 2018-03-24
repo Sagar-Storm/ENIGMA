@@ -230,9 +230,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                          @Override
                          public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
+                             mStatusManager.getCurrentQuestion().getQuestion().setNumberOfTries(10);
+                             mStatusManager.updateScoreForSkippedQuestion();
                              mStatusManager.updateAnsweredStatusForCurrentQuestion();
-                             mQuestionManager.updateAnsweredStatusInDb();
-
+                             mStatusManager.updateNumberOfTriesInFirebase();
+                            // mQuestionManager.updateAnsweredStatusInDb();
                              setUpQuestion();
                              dialog.dismiss();
                              Toast.makeText(getApplicationContext(),"Dope",Toast.LENGTH_SHORT).show();
@@ -297,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 mStatusManager.updateScoreAndTimeForCurrentQuestion();
                                 mStatusManager.updateAnsweredStatusForCurrentQuestion();
-
+                                mStatusManager.updateNumberOfTriesInFirebase();
                                 //long questionUUID = getQuestionUUID();
                                 //int currentQuestionScore = getCurrentQuestionScore();
 
@@ -323,10 +325,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 mStatusManager.incrementNoOfTries();
-                                mQuestionManager.updateNumberOfTries();
+                                //mQuestionManager.updateNumberOfTries();
                                 mStatusManager.updateNumberOfTriesInFirebase();
 
                                 if(mStatusManager.getCurrentQuestion().getQuestion().getNumberOfTries() == 3) {
+                                    mStatusManager.updateScoreAndTimeForCurrentQuestion();
                                     mStatusManager.updateAnsweredStatusForCurrentQuestion();
                                    // mQuestionManager.updateAnsweredStatusInDb();
                                     setUpQuestion();

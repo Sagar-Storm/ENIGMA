@@ -46,7 +46,7 @@ public class FirebaseHelper {
     }
 
 
-    public void writeScore(int finalScore, int score, int questionID, FirebaseUser user) {
+    public void writeScore(int finalScore, int score, int questionID, long timeAnsweredAt, FirebaseUser user) {
 
         Log.i("score", "writescore called");
         String _questionID = Integer.toString(questionID);
@@ -57,7 +57,7 @@ public class FirebaseHelper {
         String _emailId = user.getEmail().split("@")[0];
 
         try {
-            mDatabaseReference.child(user.getUid()).child(_emailId).child("score_details").push().setValue(new ScoreObject(questionID, score));
+            mDatabaseReference.child(user.getUid()).child(_emailId).child("score_details").push().setValue(new ScoreObject(questionID, score, timeAnsweredAt));
             Map<String, Integer> finalScoreMap = new HashMap<>();
             finalScoreMap.put("finalScore", finalScore);
             mDatabaseReference.child(user.getUid()).child(_emailId).child("final_score").setValue(finalScoreMap);
@@ -139,9 +139,7 @@ public class FirebaseHelper {
                     System.out.println(dataSnapshot.getValue());
                     numberOfTriesMap =(HashMap<String, String>) dataSnapshot.getValue(t);
                     if(numberOfTriesMap != null) {
-                        for (String integer : numberOfTriesMap.keySet()) {
-                            System.out.println(numberOfTriesMap.get(integer) + "for the question" + integer.split("_")[0]);
-                        }
+
                         QuestionManager.get(mAppContext).updateNumberOfTriesFromFirebaseMap(numberOfTriesMap);
                     } else {
                         Log.i("i", "number of tries fetched is null, user is fresh");
@@ -183,6 +181,7 @@ public class FirebaseHelper {
                     StatusManager.get(mAppContext).setAnsweredListIds(answeredListIds);
                     System.out.println("size of firebase answerd list " + StatusManager.get(mAppContext).getAnsweredListIds().size());
                 }
+
                 QuestionManager.get(mAppContext).initializeFromFirebaseList();
             }
 
@@ -204,6 +203,7 @@ public class FirebaseHelper {
     }
 
     public void getTimeStamp(FirebaseUser user) {
+
 
         String emailId = getEmailStripped(user.getEmail());
         System.out.println("timestamp" + emailId);
@@ -243,15 +243,18 @@ public class FirebaseHelper {
 
         public int score;
         public int questionId;
+        public long timeAnswered;
 
         public ScoreObject() {
             score = 0;
             questionId = -1;
+            timeAnswered = 0;
         }
 
-        public ScoreObject (int questionId, int score) {
+        public ScoreObject (int questionId, int score, long timeRemaining) {
             this.score = score;
             this.questionId = questionId;
+            this.timeAnswered =timeRemaining;
         }
 
     }

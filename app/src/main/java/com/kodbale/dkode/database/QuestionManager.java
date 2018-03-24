@@ -162,8 +162,6 @@ public class QuestionManager {
         ArrayList<Integer> answeredListIds = StatusManager.get(mAppContext).getAnsweredListIds();
         mNotAnsweredList = mAllQuestions;
 
-        System.out.println( "sizeof answerded after fetch" + answeredListIds.size());
-        System.out.println("Size of answered list " + mAnsweredList.size());
 
 
         for(int i = 0; i < answeredListIds.size(); i++) {
@@ -172,14 +170,14 @@ public class QuestionManager {
                 if(indexOfQuestion != -1) {
                     mAnsweredList.add(mAllQuestions.get(indexOfQuestion));
                     mAllQuestions.get(indexOfQuestion).setIsAnswered(true);
+              //      mAllQuestions.get(indexOfQuestion).setScore(250);
                     mNotAnsweredList.remove(mAllQuestions.get(indexOfQuestion));
                 }
             }
         }
 
-        System.out.println("size of not answered " + mNotAnsweredList.size());
         System.out.println("Size of answered list " + mAnsweredList.size());
-        System.out.println("sizeof notanswerded" + mNotAnsweredList.size());
+        System.out.println("sizeof not answered" + mNotAnsweredList.size());
     }
 
     public int getQuestionById(ArrayList<Question> questionList, int questionId) {
@@ -253,12 +251,6 @@ public class QuestionManager {
         mDatabaseHelper.updateAnsweredStatus(id) ;
     }
 
-
-
-
-
-
-
     public void updateNumberOfTries() {
         int numberOfTries = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getNumberOfTries();
         int id = StatusManager.get(mAppContext).getCurrentQuestion().getQuestion().getQuestionId();
@@ -268,15 +260,19 @@ public class QuestionManager {
     public void updateNumberOfTriesFromFirebaseMap(Map<String, String> mapTries) {
 
         for(String questionId: mapTries.keySet()) {
-
             String _questionId = questionId.split("_")[0];
             Question question = getByID(mAnsweredList, Integer.parseInt(_questionId));
+        //    Log.i("now at", _questionId + " " + Integer.parseInt(_questionId) + mAnsweredList.size());
             if(question != null) {
+                Log.i("found a question", question.getQuestionId() + "");
                 question.setNumberOfTries(Integer.parseInt(mapTries.get(questionId)));
                 if(question.getNumberOfTries() >= 3) {
+                    Log.i("number of tries", "is greater than or equal to 3");
                     question.setScore(0);
-                } else {
-                    question.setScore(250 / question.getNumberOfTries() + 1);
+                }
+                else {
+                    Log.i("number of tries", "less than 3" );
+                    question.setScore( 250 / (question.getNumberOfTries() + 1) );
                 }
             }
 
@@ -288,11 +284,7 @@ public class QuestionManager {
             Question question = getByID(mNotAnsweredList, Integer.parseInt(_questionId));
             if(question != null) {
                 question.setNumberOfTries(Integer.parseInt(mapTries.get(questionId)));
-                if(question.getNumberOfTries() >= 3) {
                     question.setScore(0);
-                } else {
-                    question.setScore(250/question.getNumberOfTries() + 1);
-                }
             }
         }
 

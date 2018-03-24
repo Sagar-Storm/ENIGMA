@@ -47,14 +47,16 @@ public class StatusManager {
     private Solutions mSolution ;
 
 
-    int mTotalQuestionsShown = 0;
-    int mQuestionAnswered  = 0;
+    public int mTotalQuestionsShown = 0;
+    public int mQuestionAnswered  = 0;
     int mTotalScore = 0;
+
+
+    //not needed
     int mQuestionSkipped = 0;
     int mQuestionTimedOut = 0;
-
     int mTotalQuestion = 0;
-
+//till here
 
     private static StatusManager mStatusManager = null;
     private Context mAppContext;
@@ -147,7 +149,7 @@ public class StatusManager {
             Question question = getQuestion();
             int score = question.getScore();
             int questionId = question.getQuestionId();
-            mFirebaseHelper.writeScore(mTotalScore, score, questionId, mUser);
+            mFirebaseHelper.writeScore(mTotalScore, score, questionId, mCurrentQuestion.mTimeAnsweredAt,mUser);
         } catch(Exception e) {
             Log.i("tag", "couldn't write the score to firebase");
         }
@@ -171,18 +173,33 @@ public class StatusManager {
     public void updateScoreAndTimeForCurrentQuestion() {
         long timeAnsweredAt = 5200 - mTimeRemaining;
         mCurrentQuestion.setTimeAnsweredAt(timeAnsweredAt);
-
         int score = 0;
         if(mCurrentQuestion.getQuestion().getNumberOfTries() == 0) {
             score = 250;
-        } else {
-            score = 250 / (mCurrentQuestion.getQuestion().getNumberOfTries() + 1) ;
+        } else if(mCurrentQuestion.getQuestion().getNumberOfTries() >=3) {
+            score = 0;
+        }
+        else {
+                score = 250 / (mCurrentQuestion.getQuestion().getNumberOfTries() + 1) ;
         }
         mCurrentQuestion.getQuestion().setScore(score);
         updateTotalScore(score);
         writeScoreToFirebase();
-        mFirebaseHelper.writeTimeAnswered(mCurrentQuestion.getQuestion(), mCurrentQuestion.getTimeRemaining(), mUser);
+
     }
+
+    public void updateScoreForSkippedQuestion() {
+        int score = 0;
+        long timeAnsweredAt = 5200 - mTimeRemaining;
+        mCurrentQuestion.setTimeAnsweredAt(timeAnsweredAt);
+        mCurrentQuestion.getQuestion().setScore(0);
+        writeScoreToFirebase();
+    }
+
+
+
+
+
 
     public void updateAnsweredStatusForCurrentQuestion (){
         mCurrentQuestion.getQuestion().setIsAnswered(true);
@@ -307,4 +324,7 @@ public class StatusManager {
     public void incrementScore(int score) {
         mTotalScore += score;
     }
+
+
+
 }

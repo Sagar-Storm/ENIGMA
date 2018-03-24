@@ -118,14 +118,13 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                         mStatusManager.get(getApplicationContext()).initializeAnsweredList();
 
                         //TODO fetch the numberOfTries for each question
-                        mStatusManager.get(getApplicationContext()).initializeNumberOfTriesListInFirebase();
+                     //   mStatusManager.get(getApplicationContext()).initializeNumberOfTriesListInFirebase();
 
 
 
                         //fetches the timestamp of the user. It sets allset = 0 if previously not loggedin, else allset = 1 if loggedin
                         //this sets the timestamp variable to the logged_in_at thing
                         mStatusManager.get(getApplicationContext()).initializeGameLogin();
-                    //    new timeLessTimer().execute("");
                         getTime();
                         processing = 1;
                         fetchedUnixTime = 0;
@@ -139,11 +138,26 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
                         handler.postDelayed(this, 1000);
 
                     }
-
                 }
             };
 
-            handler.postDelayed(runnable, 0);
+        Runnable secondRunnable = new Runnable() {
+            @Override
+            public void run() {
+
+                if(processing == 2) {
+                    mStatusManager.get(getApplicationContext()).initializeNumberOfTriesListInFirebase();
+                    processing = 3;
+                    allSet2();
+                } else {
+                    handler.postDelayed(this, 1000);
+                }
+
+            }
+        };
+
+        handler.postDelayed(runnable, 0);
+        handler.postDelayed(secondRunnable, 3000);
 
 
          //   QuestionManager.get(getApplicationContext()).initializeFromFirebaseList();
@@ -195,6 +209,12 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
 
     public void allSet() {
 
+
+        processing = 2;
+       fetchedUnixTime = 0;
+    }
+
+    public void allSet2() {
         btn.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         handler = null;
