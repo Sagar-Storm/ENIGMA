@@ -17,13 +17,14 @@ import java.util.ArrayList;
 
 public class CustomAdapter  extends ArrayAdapter<Question>{
 
-
     private Activity context;
+    private int number;
     ArrayList<Question> questions;
     public CustomAdapter(Activity context, ArrayList<Question> questionss, int resource) {
         super(context, resource, questionss);
         this.context = context;
         this.questions = questionss;
+        this.number = 1;
 
     }
 
@@ -41,21 +42,22 @@ public class CustomAdapter  extends ArrayAdapter<Question>{
         }
         Question question = questions.get(position);
         if (question==null) return v;
-        String id = "" + question.getQuestionId()+".";
+        String id = "" +this.number+".";
         String scr = "" + question.getScore();
-        viewHolder.qno.setText(id);
-        // TODO change to question title
+        //viewHolder.qno.setText(id);
+        (this.number)++;
+
         viewHolder.qtitle.setText(question.getQuestionText());
         viewHolder.qscore.setText(scr);
         return v;
     }
 
     class ViewHolder{
-        TextView qno;
+        //TextView qno;
         TextView qtitle;
         TextView qscore;
         ViewHolder(View v){
-            qno=(TextView)v.findViewById(R.id.qno_display);
+            //qno=(TextView)v.findViewById(R.id.qno_display);
             qtitle = (TextView)v.findViewById(R.id.qtitle_display);
             qscore = (TextView)v.findViewById(R.id.qscore_display);
 

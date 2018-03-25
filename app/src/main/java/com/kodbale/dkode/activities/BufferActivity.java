@@ -1,12 +1,7 @@
 package com.kodbale.dkode.activities;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,16 +11,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.kodbale.dkode.TimerService;
 import com.kodbale.dkode.database.QuestionManager;
 import com.kodbale.dkode.database.StatusManager;
 import com.kodbale.dkode.login.LoginActivity;
@@ -33,14 +25,6 @@ import com.kodbale.dkode.MainActivity;
 import com.kodbale.dkode.R;
 
 import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class BufferActivity extends AppCompatActivity implements View.OnClickListener {
@@ -229,7 +213,7 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
         handler = null ;
 
         Intent intent = new Intent(this, MainActivity.class);
-        Intent ser = new Intent(this, TimerService.class);
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         if(mStatusManager.getTimeStamp() == null) {
@@ -249,16 +233,14 @@ public class BufferActivity extends AppCompatActivity implements View.OnClickLis
             if(currentTimeRemaining <= 0 ) {
                  intent = new Intent(this, EndingActivity.class);
                  intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                 Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
+                 //Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
                  startActivity(intent);
                  finish();
                  return;
             }
-            ser.putExtra("timeToEnd",currentTimeRemaining);
             intent.putExtra("TIME_REMAINING", currentTimeRemaining);
             System.out.println("current_timeremaining" + currentTimeRemaining+"");
         }
-        startService(ser);
         startActivity(intent);
         finish();
     }

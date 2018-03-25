@@ -100,23 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == camRequestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-            } else {
-                new MaterialStyledDialog.Builder(this)
-                        .setTitle("Wrong Answer!")
-                        .setStyle(Style.HEADER_WITH_TITLE)
-                        .setDescription("But we really need the permission to continue, if you keep pressing no, it will run" +
-                                " into an infinite loop!")
-                        .show();
-                ActivityCompat.requestPermissions(getParent(),new String[] {android.Manifest.permission.CAMERA}, camRequestCode);
-            }
-        }
-    }
+
 
 
 
@@ -138,13 +122,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //sees to set the time remaining of the logged_in user
         if(getIntent().getExtras() != null) {
             Long timeExtra = getIntent().getExtras().getLong("TIME_REMAINING");
-            Toast.makeText(this, "extra was there", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(this, "extra was there", Toast.LENGTH_SHORT).show();
             if (timeExtra != null) {
                 timeRemaining = timeExtra;
             }
         }
 
-        mTimerTextView.setText(timeRemaining+"");
         submit.setOnClickListener(this);
         skip.setOnClickListener(this);
 
@@ -163,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (handler != null) {
                             handler.postDelayed(this, 1000);
                             StatusManager.get(getApplicationContext()).setTimeRemaining(timeRemaining);
-                            mTimerTextView.setText(timeRemaining + "");
+                           // mTimerTextView.setText(timeRemaining + "");
                         }
                     } else {
                         startend();
@@ -203,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void startend() {
-        Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
+         Toast.makeText(this, "damadama time over", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, EndingActivity.class));
         finish();
     }
@@ -238,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             // mQuestionManager.updateAnsweredStatusInDb();
                              setUpQuestion();
                              dialog.dismiss();
-                             Toast.makeText(getApplicationContext(),"Dope",Toast.LENGTH_SHORT).show();
+                             //Toast.makeText(getApplicationContext(),"Dope",Toast.LENGTH_SHORT).show();
                          }
                      })
                      .setNegativeText("No no!")
@@ -361,20 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return score;
     }
 
-    private BroadcastReceiver br = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateTime(intent);
 
-        }
-    };
-
-    private void updateTime(Intent intent) {
-        if (intent.getExtras()!=null){
-            long timeRemainingNow = intent.getLongExtra("countdown",0);
-            Log.i("aaa", "updateTime: "+timeRemainingNow);
-        }
-    }
 
 
 

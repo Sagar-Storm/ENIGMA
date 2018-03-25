@@ -42,7 +42,6 @@
 
             android:hint="Group ID"
             android:inputType="textEmailAddress"
-            android:text="sagar@a.com"
             />
         </android.support.design.widget.TextInputLayout>
 
@@ -61,7 +60,6 @@
             android:layout_below="@id/group_id"
             android:hint="Passcode"
             android:inputType="textPassword"
-            android:text="sagarsagar"
             />
         </android.support.design.widget.TextInputLayout>
 
@@ -84,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:textColor="@color/white"
-            android:text="Didn't get a ticket?, get one..."
+            android:text="Didn't get a ticket? get one..."
             android:gravity="center"
             android:textSize="16dip"/>
 

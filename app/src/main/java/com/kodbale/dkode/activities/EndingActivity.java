@@ -25,7 +25,6 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
     FirebaseUser mFirebaseUser = null;
     FirebaseAuth.AuthStateListener mAuthListener;
 
-    private TextView text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +46,9 @@ public class EndingActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         };
-        text = findViewById(R.id.finalScoreHolder);
-        text.setText("C-ME");
+
+        //Toast.makeText(getApplicationContext(),"Dama Dama time over!!",Toast.LENGTH_SHORT).show();
+
     }
 
     public void onScoreButtonClicked(View view) {

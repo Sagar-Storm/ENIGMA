@@ -12,8 +12,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private CountDownTimer countDownTimer;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
