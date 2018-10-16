@@ -250,9 +250,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if(data==null)
                 return;
 
-            String solution = "something";
+            String solution = "we set this to some default value";
             String result = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult");
 
+            // We make the solution equal to the result, so that when the comparison is done, it'll always be right!
             solution = result;
 
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -274,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         });
             } else {
-                alertDialog.setMessage("you failed to answer the question");
+                alertDialog.setMessage("you failed to answer the question" + " Consider scanning the qrcode again" );
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
